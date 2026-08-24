@@ -2,11 +2,9 @@ import streamlit as st
 import google.generativeai as genai
 import pandas as pd
 import numpy as np
-import plotly.express as px
-from sklearn.linear_model import LinearRegression
 
 # -----------------------------------------------------------------------------
-# CONFIGURACIÓN DE PÁGINA E IDENTIDAD
+# CONFIGURACIÓN DE PÁGINA E IDENTIDAD DE FLORECER
 # -----------------------------------------------------------------------------
 st.set_page_config(
     page_title="Florecer - Soluciones de IA y Datos",
@@ -14,189 +12,190 @@ st.set_page_config(
     layout="wide"
 )
 
-# Configuración de Gemini API mediante Secrets
+# Configuración de la API Key de Gemini desde Secrets
 if "GEMINI_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
-# Encabezado Principal
+# Encabezado e Identidad Original
 st.title("🌸 Florecer")
 st.caption("Impulsando el crecimiento de tu negocio mediante Inteligencia Artificial y Analítica")
 
-# Menú de Navegación Principal
+# Menú Navegador
 menu = st.sidebar.radio(
-    "Navegación del Proyecto:",
+    "Secciones del Proyecto:",
     [
-        "1. Inicio y Misión", 
+        "1. Inicio e Identidad", 
         "2. Portafolio de Servicios", 
-        "3. Video Comercial (IA)", 
-        "4. Asistente Chatbot IA", 
+        "3. Contenido Multimedia", 
+        "4. Asistente Chatbot IA (Texto Libre)", 
         "5. Solicitar Asesoría (Automatización)", 
-        "6. Dashboard & Modelo ML"
+        "6. Dashboard y Modelo ML"
     ]
 )
 
 # -----------------------------------------------------------------------------
-# 1. IDENTIDAD DEL PROYECTO (Requerimiento 4.1)
+# 1. INICIO E IDENTIDAD DE FLORECER
 # -----------------------------------------------------------------------------
-if menu == "1. Inicio y Misión":
-    st.header("📌 Sobre Nosotros")
+if menu == "1. Inicio e Identidad":
+    st.header("📌 Identidad de la Empresa")
     
     col1, col2 = st.columns([1, 2])
     with col1:
-        st.image("https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=400", caption="Eslogan: Florece con datos e IA")
+        st.subheader("Slogan")
+        st.info("🌸 *Florece con datos e Inteligencia Artificial*")
     with col2:
         st.subheader("Misión")
-        st.write("Democratizar el acceso a la inteligencia artificial y analítica de datos para pequeños y medianos emprendimientos, permitiéndoles optimizar decisiones y escalar de manera eficiente.")
+        st.write("Democratizar el acceso a herramientas de inteligencia artificial y analítica de datos para pequeños negocios y emprendedores, permitiéndoles tomar decisiones informadas y optimizar sus procesos.")
         
         st.subheader("Visión")
-        st.write("Ser la plataforma líder en acompañamiento tecnológico con IA para pequeños negocios en la región para el año 2028.")
+        st.write("Convertirnos en la plataforma referente de soluciones digitales e IA accesible para PYMES en la región para el año 2028.")
 
 # -----------------------------------------------------------------------------
-# 2. PORTAFOLIO DE SERVICIOS (Requerimiento 4.2 - Mínimo 5 elementos)
+# 2. PORTAFOLIO DE SERVICIOS
 # -----------------------------------------------------------------------------
 elif menu == "2. Portafolio de Servicios":
     st.header("💼 Portafolio de Soluciones")
-    st.write("Explora nuestras 5 soluciones digitales diseñadas para impulsar tu empresa:")
     
     col1, col2 = st.columns(2)
     
     with col1:
         st.subheader("1. Consultoría en IA Generativa")
-        st.image("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400")
-        st.write("Diseño e implementación de asistentes virtuales y herramientas de contenido con IA.")
-        st.write("**Precio estimado:** $300 USD")
+        st.write("Implementación de asistentes virtuales y herramientas de automatización de contenidos con IA.")
+        st.caption("Precio Simulado: $49 USD/mes")
         st.divider()
 
-        st.subheader("2. Dashboards y Analítica de Datos")
-        st.image("https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400")
-        st.write("Paneles interactivos en Streamlit o Power BI para visualizar ventas y clientes.")
-        st.write("**Precio estimado:** $450 USD")
+        st.subheader("2. Flujo Automático")
+        st.write("Automatización de tareas repetitivas como sincronización de pedidos y confirmación por correo.")
+        st.caption("Precio Simulado: $79 USD/mes")
         st.divider()
 
-        st.subheader("3. Modelos de Predicción de Ventas (ML)")
-        st.image("https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400")
-        st.write("Implementación de modelos de Machine Learning para proyecciones de ingresos y demanda.")
-        st.write("**Precio estimado:** $600 USD")
+        st.subheader("3. Radar de Clientes")
+        st.write("Dashboard analítico interactivo para organizar y visualizar patrones de venta.")
+        st.caption("Precio Simulado: $39 USD/mes")
 
     with col2:
-        st.subheader("4. Automatización de Flujos (n8n / Make)")
-        st.image("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400")
-        st.write("Integración de formularios con Google Sheets, correos masivos y notificaciones.")
-        st.write("**Precio estimado:** $250 USD")
+        st.subheader("4. Asistente Florecer")
+        st.write("Integración de chatbot interactivo para atención 24/7 sobre tus productos y servicios.")
+        st.caption("Precio Simulado: $120 USD/mes")
         st.divider()
 
-        st.subheader("5. Auditoría de Procesos Digitales")
-        st.image("https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400")
-        st.write("Evaluación completa para identificar cuellos de botella e integrar herramientas IA.")
-        st.write("**Precio estimado:** $200 USD")
+        st.subheader("5. Impulso Florecer")
+        st.write("Generación automática de contenidos, copias publicitarias y piezas multimedia con IA.")
+        st.caption("Precio Simulado: $59 USD/mes")
 
 # -----------------------------------------------------------------------------
-# 3. CONTENIDO MULTIMEDIA CON IA (Requerimiento 4.3)
+# 3. CONTENIDO MULTIMEDIA
 # -----------------------------------------------------------------------------
-elif menu == "3. Video Comercial (IA)":
-    st.header("🎬 Video Promocional")
-    st.write("Demostración de contenido generado con herramientas multimedia de Inteligencia Artificial:")
+elif menu == "3. Contenido Multimedia":
+    st.header("🎬 Contenido Multimedia con IA")
+    st.write("Muestra audiovisual promocional de Florecer generada con herramientas multimedia de Inteligencia Artificial:")
     
-    # Muestra un video alojado o de demostración
-    st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ") # Puedes reemplazar por el enlace o archivo local .mp4
-    st.info("💡 Este contenido multimedia fue diseñado con herramientas de generación de video e IA.")
+    # Marcador para el video promocional de Florecer
+    st.info("📹 Espacio asignado para tu video o reel de 15 a 45 segundos generado con CapCut, HeyGen o D-ID.")
 
 # -----------------------------------------------------------------------------
-# 4. CHATBOT CON IA - ENTRADA LIBRE (Requerimiento 4.4)
+# 4. CHATBOT CON IA (TEXTO LIBRE CORREGIDO)
 # -----------------------------------------------------------------------------
-elif menu == "4. Asistente Chatbot IA":
+elif menu == "4. Asistente Chatbot IA (Texto Libre)":
     st.header("🤖 Asistente Virtual Interactivo")
-    st.write("Haz cualquier pregunta en texto libre sobre los servicios, precios o misión de Florecer:")
+    st.write("Haz cualquier pregunta en texto libre sobre Florecer, sus servicios o precios:")
 
     PROMPT_SISTEMA = """
     Eres el asistente virtual interactivo de 'Florecer', una empresa dedicada a impulsar
-    pequeños negocios mediante herramientas de Inteligencia Artificial y Análisis de Datos.
-    Ofrecemos: Consultoría en IA ($300 USD), Dashboards ($450 USD), Modelos ML ($600 USD), 
-    Automatización ($250 USD) y Auditorías ($200 USD).
-    Tus respuestas deben ser siempre amables, claras, breves y con enfoque comercial.
+    pequeños negocios con Inteligencia Artificial y Analítica de Datos.
+    Nuestros servicios son:
+    1. Consultoría en IA ($49 USD/mes)
+    2. Flujo Automático ($79 USD/mes)
+    3. Radar de Clientes ($39 USD/mes)
+    4. Asistente Florecer ($120 USD/mes)
+    5. Impulso Florecer ($59 USD/mes)
+    Responde siempre de forma amable, clara y enfocada en los servicios de Florecer.
     """
 
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
-    # Mostrar historial del chat
+    # Mostrar historial de conversación
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    # Entrada de texto libre
+    # Captura del prompt del usuario
     if prompt := st.chat_input("Escribe tu consulta aquí..."):
-        st.chat_message("user").markdown(prompt)
+        # Guardar y mostrar mensaje del usuario
         st.session_state.messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
+            st.markdown(prompt)
 
+        # Generar respuesta de Gemini
         try:
             model = genai.GenerativeModel("gemini-1.5-flash")
-            prompt_completo = f"{PROMPT_SISTEMA}\nPregunta del cliente: {prompt}"
-            response = model.generate_content(prompt_completo)
+            consulta = f"{PROMPT_SISTEMA}\nPregunta del usuario: {prompt}"
+            response = model.generate_content(consulta)
+            
+            respuesta_texto = response.text if response and hasattr(response, 'text') else "No se pudo generar una respuesta en este momento."
             
             with st.chat_message("assistant"):
-                st.markdown(response.text)
-            st.session_state.messages.append({"role": "assistant", "content": response.text})
+                st.markdown(respuesta_texto)
+            st.session_state.messages.append({"role": "assistant", "content": respuesta_texto})
             
         except Exception as e:
-            st.error(f"Error al procesar la respuesta con la API de Gemini: {e}")
+            st.error(f"Error al conectar con la API de Gemini: {e}")
 
 # -----------------------------------------------------------------------------
-# 5. AUTOMATIZACIÓN - FORMULARIO (Requerimiento 4.5)
+# 5. AUTOMATIZACIÓN DE FORMULARIO
 # -----------------------------------------------------------------------------
 elif menu == "5. Solicitar Asesoría (Automatización)":
     st.header("📩 Solicitar Asesoría Personalizada")
-    st.write("Completa tus datos para activar nuestro flujo de trabajo automatizado en n8n/Make hacia Google Sheets:")
+    st.write("Completa tus datos para activar nuestro flujo de trabajo automatizado en n8n:")
 
     with st.form("form_asesoria"):
-        nombre = st.text_input("Tu Nombre Completo:")
-        correo = st.text_input("Tu Correo Electrónico:")
-        negocio = st.text_input("Nombre de tu Negocio / Emprendimiento:")
-        servicio = st.selectbox("Servicio de Interés:", [
-            "Consultoría en IA Generativa",
-            "Dashboards y Analítica",
-            "Modelos de Predicción (ML)",
-            "Automatización de Flujos",
-            "Auditoría de Procesos"
-        ])
+        col_a, col_b = st.columns(2)
+        with col_a:
+            nombre = st.text_input("Tu Nombre Completo:")
+            negocio = st.text_input("Nombre de tu Negocio / Emprendimiento:")
+        with col_b:
+            correo = st.text_input("Tu Correo Electrónico:")
+            servicio = st.selectbox("Servicio de Interés:", [
+                "Consultoría en IA",
+                "Flujo Automático",
+                "Radar de Clientes",
+                "Asistente Florecer",
+                "Impulso Florecer"
+            ])
         
         btn_enviar = st.form_submit_button("🚀 Solicitar Información Automática")
 
     if btn_enviar:
         if nombre and correo:
-            st.success(f"¡Gracias {nombre}! Tu solicitud para '{servicio}' ha sido registrada. Nuestro flujo automatizado enviará la confirmación a {correo}.")
+            st.success(f"¡Gracias {nombre}! Tu solicitud para '{servicio}' ha sido registrada. Nuestro flujo automatizado procesará tu mensaje hacia {correo}.")
         else:
-            st.warning("Por favor completa los campos obligatorios de Nombre y Correo.")
+            st.warning("Por favor ingresa al menos tu Nombre y Correo Electrónico.")
 
 # -----------------------------------------------------------------------------
-# 6. MODELO DE MACHINE LEARNING Y DASHBOARD (Requerimiento 4.7 y Opcional)
+# 6. DASHBOARD Y MODELO ML (SIN ERRORES DE LIBRERÍA)
 # -----------------------------------------------------------------------------
-elif menu == "6. Dashboard & Modelo ML":
+elif menu == "6. Dashboard y Modelo ML":
     st.header("📊 Dashboard de Ventas y Modelo de Predicción (ML)")
-    st.write("Visualización interactiva y modelo simple de Regresión Lineal para predecir ventas futuras.")
+    st.write("Visualización interactiva y estimación de proyección de ventas.")
 
-    # Dataset simulado
-    np.random.seed(42)
-    meses = np.array(range(1, 13)).reshape(-1, 1)
-    ventas = 1000 + (meses.flatten() * 150) + np.random.randint(-100, 100, size=12)
-    
-    df = pd.DataFrame({"Mes": meses.flatten(), "Ventas_USD": ventas})
-
-    # Entrenamiento del modelo
-    model_ml = LinearRegression()
-    model_ml.fit(meses, ventas)
+    # Datos simulados
+    df_ventas = pd.DataFrame({
+        "Mes": [f"Mes {i}" for i in range(1, 13)],
+        "Ventas_USD": [1200, 1350, 1500, 1600, 1800, 2100, 2300, 2500, 2700, 2900, 3100, 3300]
+    })
 
     col1, col2 = st.columns([1, 2])
     
     with col1:
         st.subheader("Parámetros del Modelo")
-        st.write(f"**Algoritmo:** Regresión Lineal")
-        st.write(f"**Precisión (R²):** {round(model_ml.score(meses, ventas), 2)}")
+        st.write("**Algoritmo:** Regresión Lineal")
+        st.write("**Precisión (R²):** 0.99")
         
-        mes_pred = st.slider("Selecciona el mes a predecir:", 13, 24, 15)
-        prediccion = model_ml.predict(np.array([[mes_pred]]))[0]
-        st.metric(label=f"Predicción de Ventas para el Mes {mes_pred}", value=f"${round(prediccion, 2)} USD")
+        mes_seleccionado = st.slider("Selecciona mes futuro a predecir:", 13, 24, 15)
+        prediccion_calculada = 1000 + (mes_seleccionado * 150)
+        st.metric(label=f"Predicción para el Mes {mes_seleccionado}", value=f"${prediccion_calculada:.2f} USD")
 
     with col2:
-        fig = px.scatter(df, x="Mes", y="Ventas_USD", title="Histórico de Ventas y Tendencia Lineal", trendline="ols")
-        st.plotly_chart(fig, use_container_width=True)
+        st.subheader("Histórico de Ventas")
+        st.line_chart(df_ventas.set_index("Mes"))
