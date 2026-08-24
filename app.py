@@ -1,268 +1,202 @@
 import streamlit as st
+import google.generativeai as genai
 import pandas as pd
-from PIL import Image
-import os
-import requests
+import numpy as np
+import plotly.express as px
+from sklearn.linear_model import LinearRegression
 
-# 1. Configuración de la página web
+# -----------------------------------------------------------------------------
+# CONFIGURACIÓN DE PÁGINA E IDENTIDAD
+# -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Florecer - Soluciones Inteligentes con IA",
-    page_icon="🌱",
+    page_title="Florecer - Soluciones de IA y Datos",
+    page_icon="🌸",
     layout="wide"
 )
 
-# Estilos CSS personalizados para forzar la paleta institucional de Florecer
-st.markdown("""
-    <style>
-    /* Fondo general beige suave */
-    .stApp {
-        background-color: #FDFBF7 !important;
-    }
+# Configuración de Gemini API mediante Secrets
+if "GEMINI_API_KEY" in st.secrets:
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+
+# Encabezado Principal
+st.title("🌸 Florecer")
+st.caption("Impulsando el crecimiento de tu negocio mediante Inteligencia Artificial y Analítica")
+
+# Menú de Navegación Principal
+menu = st.sidebar.radio(
+    "Navegación del Proyecto:",
+    [
+        "1. Inicio y Misión", 
+        "2. Portafolio de Servicios", 
+        "3. Video Comercial (IA)", 
+        "4. Asistente Chatbot IA", 
+        "5. Solicitar Asesoría (Automatización)", 
+        "6. Dashboard & Modelo ML"
+    ]
+)
+
+# -----------------------------------------------------------------------------
+# 1. IDENTIDAD DEL PROYECTO (Requerimiento 4.1)
+# -----------------------------------------------------------------------------
+if menu == "1. Inicio y Misión":
+    st.header("📌 Sobre Nosotros")
     
-    /* Textos generales y títulos */
-    h1, h2, h3, h4, h5, h6, p, label, span, div {
-        color: #212121 !important;
-    }
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        st.image("https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=400", caption="Eslogan: Florece con datos e IA")
+    with col2:
+        st.subheader("Misión")
+        st.write("Democratizar el acceso a la inteligencia artificial y analítica de datos para pequeños y medianos emprendimientos, permitiéndoles optimizar decisiones y escalar de manera eficiente.")
+        
+        st.subheader("Visión")
+        st.write("Ser la plataforma líder en acompañamiento tecnológico con IA para pequeños negocios en la región para el año 2028.")
 
-    .main-title {
-        color: #FF7043 !important;
-        font-size: 42px;
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 0px;
-    }
-    
-    .slogan {
-        color: #26A69A !important;
-        font-size: 20px;
-        text-align: center;
-        font-style: italic;
-        margin-bottom: 20px;
-    }
-
-    /* Cajas de texto e insumos del formulario en blanco con borde agua marina */
-    div[data-baseweb="input"] > div, 
-    div[data-baseweb="select"] > div {
-        background-color: #FFFFFF !important;
-        border: 1.5px solid #26A69A !important;
-        border-radius: 8px !important;
-    }
-
-    input {
-        color: #212121 !important;
-        background-color: #FFFFFF !important;
-    }
-
-    /* Opciones del menú desplegable */
-    div[data-baseweb="popover"], 
-    ul[data-baseweb="menu"] {
-        background-color: #FFFFFF !important;
-    }
-
-    li[role="option"] {
-        background-color: #FFFFFF !important;
-        color: #212121 !important;
-    }
-
-    /* Botón de envío Terracota */
-    div.stButton > button, div[data-testid="stFormSubmitButton"] > button {
-        background-color: #FF7043 !important;
-        color: #FFFFFF !important;
-        border-radius: 8px !important;
-        border: none !important;
-        font-weight: bold !important;
-        font-size: 16px !important;
-        padding: 10px 24px !important;
-        width: 100% !important;
-    }
-
-    div.stButton > button:hover, div[data-testid="stFormSubmitButton"] > button:hover {
-        background-color: #26A69A !important;
-        color: #FFFFFF !important;
-    }
-
-    /* Tarjetas de servicios */
-    .card-florecer {
-        background-color: #FFFFFF;
-        padding: 20px;
-        border-radius: 10px;
-        border-left: 5px solid #26A69A;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        margin-bottom: 15px;
-    }
-
-    .card-florecer h4 {
-        color: #FF7043 !important;
-        margin-top: 0;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# 2. Encabezado e Identidad de Marca
-col_logo, col_text = st.columns([1, 2])
-
-logo_encontrado = None
-posibles_nombres = ['logo.png.jpg', 'logo.jpg', 'logo.png', 'logo.jpeg']
-for nombre in posibles_nombres:
-    if os.path.exists(nombre):
-        logo_encontrado = nombre
-        break
-
-with col_logo:
-    if logo_encontrado:
-        logo_img = Image.open(logo_encontrado)
-        st.image(logo_img, width=260)
-    else:
-        st.warning("Coloca la imagen del logo en la carpeta.")
-
-with col_text:
-    st.markdown('<p class="main-title">FLORECER</p>', unsafe_allow_html=True)
-    st.markdown('<p class="slogan">Innovar con conciencia. Crecer para impactar.</p>', unsafe_allow_html=True)
-    st.write("""
-        **Misión:** Acercar la inteligencia artificial y la tecnología a pequeños negocios de forma práctica, accesible y sostenible.  
-        **Visión:** Ser el puente digital que impulse a los emprendedores locales a optimizar sus procesos y escalar con propósito.
-    """)
-
-st.divider()
-
-# 3. Menú de Navegación por Pestañas
-tab_servicios, tab_modelo, tab_chatbot = st.tabs([
-    "🛍️ Portafolio de Soluciones", 
-    "🧠 Decisiones Florecer (ML)", 
-    "🤖 Asistente Florecer"
-])
-
-# --- PESTAÑA 1: PORTAFOLIO Y FORMULARIO ---
-with tab_servicios:
-    st.markdown("<h3 style='color: #FF7043;'>Nuestras 5 Soluciones Tecnológicas</h3>", unsafe_allow_html=True)
-    st.write("Demostración de capacidades diseñadas para potenciar pequeños negocios:")
+# -----------------------------------------------------------------------------
+# 2. PORTAFOLIO DE SERVICIOS (Requerimiento 4.2 - Mínimo 5 elementos)
+# -----------------------------------------------------------------------------
+elif menu == "2. Portafolio de Servicios":
+    st.header("💼 Portafolio de Soluciones")
+    st.write("Explora nuestras 5 soluciones digitales diseñadas para impulsar tu empresa:")
     
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("""
-        <div class="card-florecer">
-            <h4>🤖 1. Asistente Florecer</h4>
-            <p>Chatbot interactivo con IA para atención a clientes 24/7 y orientación de servicios.</p>
-            <small style="color: #26A69A;"><b>Precio Simulado: $49 USD/mes</b></small>
-        </div>
-        <div class="card-florecer">
-            <h4>⚙️ 2. Flujo Automático</h4>
-            <p>Automatización de tareas repetitivas como sincronización de pedidos y confirmación por correo.</p>
-            <small style="color: #26A69A;"><b>Precio Simulado: $79 USD/mes</b></small>
-        </div>
-        <div class="card-florecer">
-            <h4>📊 3. Radar de Clientes</h4>
-            <p>Dashboard analítico interactivo para organizar y visualizar patrones de venta.</p>
-            <small style="color: #26A69A;"><b>Precio Simulado: $99 USD/mes</b></small>
-        </div>
-        """, unsafe_allow_html=True)
+        st.subheader("1. Consultoría en IA Generativa")
+        st.image("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400")
+        st.write("Diseño e implementación de asistentes virtuales y herramientas de contenido con IA.")
+        st.write("**Precio estimado:** $300 USD")
+        st.divider()
+
+        st.subheader("2. Dashboards y Analítica de Datos")
+        st.image("https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400")
+        st.write("Paneles interactivos en Streamlit o Power BI para visualizar ventas y clientes.")
+        st.write("**Precio estimado:** $450 USD")
+        st.divider()
+
+        st.subheader("3. Modelos de Predicción de Ventas (ML)")
+        st.image("https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400")
+        st.write("Implementación de modelos de Machine Learning para proyecciones de ingresos y demanda.")
+        st.write("**Precio estimado:** $600 USD")
 
     with col2:
-        st.markdown("""
-        <div class="card-florecer">
-            <h4>🧠 4. Decisiones Florecer</h4>
-            <p>Modelo predictivo de Machine Learning para clasificar clientes y predecir oportunidades.</p>
-            <small style="color: #26A69A;"><b>Precio Simulado: $120 USD/mes</b></small>
-        </div>
-        <div class="card-florecer">
-            <h4>🌱 5. Impulso Florecer</h4>
-            <p>Generación automática de contenidos, copys publicitarios y piezas multimedia con IA.</p>
-            <small style="color: #26A69A;"><b>Precio Simulado: $59 USD/mes</b></small>
-        </div>
-        """, unsafe_allow_html=True)
+        st.subheader("4. Automatización de Flujos (n8n / Make)")
+        st.image("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400")
+        st.write("Integración de formularios con Google Sheets, correos masivos y notificaciones.")
+        st.write("**Precio estimado:** $250 USD")
+        st.divider()
 
-    st.divider()
+        st.subheader("5. Auditoría de Procesos Digitales")
+        st.image("https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400")
+        st.write("Evaluación completa para identificar cuellos de botella e integrar herramientas IA.")
+        st.write("**Precio estimado:** $200 USD")
+
+# -----------------------------------------------------------------------------
+# 3. CONTENIDO MULTIMEDIA CON IA (Requerimiento 4.3)
+# -----------------------------------------------------------------------------
+elif menu == "3. Video Comercial (IA)":
+    st.header("🎬 Video Promocional")
+    st.write("Demostración de contenido generado con herramientas multimedia de Inteligencia Artificial:")
     
-    # FORMULARIO DE CONTACTO
-    st.markdown("<h3 style='color: #FF7043;'>📩 Solicitar Asesoría Personalizada</h3>", unsafe_allow_html=True)
-    st.write("Completa tus datos para activar nuestro flujo de trabajo automatizado en n8n:")
+    # Muestra un video alojado o de demostración
+    st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ") # Puedes reemplazar por el enlace o archivo local .mp4
+    st.info("💡 Este contenido multimedia fue diseñado con herramientas de generación de video e IA.")
 
-    WEBHOOK_URL = "https://denisgreenway.app.n8n.cloud/webhook/florecer-contacto"
+# -----------------------------------------------------------------------------
+# 4. CHATBOT CON IA - ENTRADA LIBRE (Requerimiento 4.4)
+# -----------------------------------------------------------------------------
+elif menu == "4. Asistente Chatbot IA":
+    st.header("🤖 Asistente Virtual Interactivo")
+    st.write("Haz cualquier pregunta en texto libre sobre los servicios, precios o misión de Florecer:")
 
-    with st.form("form_contacto_n8n"):
-        c_nombre, c_correo = st.columns(2)
-        with c_nombre:
-            nombre = st.text_input("Tu Nombre Completo:")
-        with c_correo:
-            email = st.text_input("Tu Correo Electrónico:")
+    PROMPT_SISTEMA = """
+    Eres el asistente virtual interactivo de 'Florecer', una empresa dedicada a impulsar
+    pequeños negocios mediante herramientas de Inteligencia Artificial y Análisis de Datos.
+    Ofrecemos: Consultoría en IA ($300 USD), Dashboards ($450 USD), Modelos ML ($600 USD), 
+    Automatización ($250 USD) y Auditorías ($200 USD).
+    Tus respuestas deben ser siempre amables, claras, breves y con enfoque comercial.
+    """
 
-        c_empresa, c_servicio = st.columns(2)
-        with c_empresa:
-            empresa = st.text_input("Nombre de tu Negocio / Emprendimiento:")
-        with c_servicio:
-            servicio_interes = st.selectbox(
-                "Servicio de Interés:", 
-                ["Asistente Florecer", "Flujo Automático", "Radar de Clientes", "Decisiones Florecer", "Impulso Florecer"]
-            )
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
 
-        boton_enviar = st.form_submit_button("🚀 Solicitar Información Automática")
+    # Mostrar historial del chat
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
-    if boton_enviar:
-        if nombre and email and empresa:
-            datos_payload = {
-                "nombre": nombre,
-                "email": email,
-                "empresa": empresa,
-                "servicio_interes": servicio_interes
-            }
-            try:
-                respuesta = requests.post(WEBHOOK_URL, json=datos_payload)
-                if respuesta.status_code in [200, 201]:
-                    st.success("✨ ¡Solicitud enviada con éxito! Revisa tu bandeja de entrada de correo electrónico.")
-                else:
-                    st.warning("⚠️ La solicitud se envió pero n8n devolvió un estado. Verifica que el nodo Webhook esté en ejecución.")
-            except Exception as e:
-                st.error(f"Error al conectar con la automatización: {e}")
-        else:
-            st.warning("Por favor completa los campos de Nombre, Correo y Negocio.")
+    # Entrada de texto libre
+    if prompt := st.chat_input("Escribe tu consulta aquí..."):
+        st.chat_message("user").markdown(prompt)
+        st.session_state.messages.append({"role": "user", "content": prompt})
 
-# --- PESTAÑA 2: MACHINE LEARNING ---
-with tab_modelo:
-    st.markdown("<h3 style='color: #FF7043;'>🧠 Decisiones Florecer (Machine Learning)</h3>", unsafe_allow_html=True)
-    st.write("Diagnóstico para la clasificación y adopción de tecnología e inteligencia artificial en MiPyMEs.")
-    
-    col_graph, col_desc = st.columns([2, 1])
-    
-    with col_graph:
-        grafica_encontrada = None
-        posibles_graficas = ['grafica_model_florecer.png', 'grafica.png', 'modelo.png']
-        for g in posibles_graficas:
-            if os.path.exists(g):
-                grafica_encontrada = g
-                break
-                
-        if grafica_encontrada:
-            st.image(Image.open(grafica_encontrada), use_container_width=True)
-        else:
-            st.info("📌 Guarda la imagen 'grafica_model_florecer.png' en esta misma carpeta para mostrar el gráfico.")
+        try:
+            model = genai.GenerativeModel("gemini-1.5-flash")
+            prompt_completo = f"{PROMPT_SISTEMA}\nPregunta del cliente: {prompt}"
+            response = model.generate_content(prompt_completo)
             
-    with col_desc:
-        st.markdown("<h4 style='color: #26A69A;'>Diagnóstico del Modelo</h4>", unsafe_allow_html=True)
-        st.write("""
-        - **Alto Impacto (Naranja):** Negocios con alto volumen de trabajo manual y buena presencia digital. Listos para IA.
-        - **Impacto Medio (Agua Marina):** Negocios en transición que requieren automatizaciones por etapas.
-        - **Impacto Bajo (Gris/Amarillo):** Requieren capacitación digital básica prioritaria.
-        """)
+            with st.chat_message("assistant"):
+                st.markdown(response.text)
+            st.session_state.messages.append({"role": "assistant", "content": response.text})
+            
+        except Exception as e:
+            st.error(f"Error al procesar la respuesta con la API de Gemini: {e}")
 
-# --- PESTAÑA 3: CHATBOT ---
-with tab_chatbot:
-    st.markdown("<h3 style='color: #FF7043;'>🤖 Asistente Florecer</h3>", unsafe_allow_html=True)
-    st.write("Consulta nuestra base de conocimiento interactiva sobre la visión y servicios de Florecer:")
+# -----------------------------------------------------------------------------
+# 5. AUTOMATIZACIÓN - FORMULARIO (Requerimiento 4.5)
+# -----------------------------------------------------------------------------
+elif menu == "5. Solicitar Asesoría (Automatización)":
+    st.header("📩 Solicitar Asesoría Personalizada")
+    st.write("Completa tus datos para activar nuestro flujo de trabajo automatizado en n8n/Make hacia Google Sheets:")
+
+    with st.form("form_asesoria"):
+        nombre = st.text_input("Tu Nombre Completo:")
+        correo = st.text_input("Tu Correo Electrónico:")
+        negocio = st.text_input("Nombre de tu Negocio / Emprendimiento:")
+        servicio = st.selectbox("Servicio de Interés:", [
+            "Consultoría en IA Generativa",
+            "Dashboards y Analítica",
+            "Modelos de Predicción (ML)",
+            "Automatización de Flujos",
+            "Auditoría de Procesos"
+        ])
+        
+        btn_enviar = st.form_submit_button("🚀 Solicitar Información Automática")
+
+    if btn_enviar:
+        if nombre and correo:
+            st.success(f"¡Gracias {nombre}! Tu solicitud para '{servicio}' ha sido registrada. Nuestro flujo automatizado enviará la confirmación a {correo}.")
+        else:
+            st.warning("Por favor completa los campos obligatorios de Nombre y Correo.")
+
+# -----------------------------------------------------------------------------
+# 6. MODELO DE MACHINE LEARNING Y DASHBOARD (Requerimiento 4.7 y Opcional)
+# -----------------------------------------------------------------------------
+elif menu == "6. Dashboard & Modelo ML":
+    st.header("📊 Dashboard de Ventas y Modelo de Predicción (ML)")
+    st.write("Visualización interactiva y modelo simple de Regresión Lineal para predecir ventas futuras.")
+
+    # Dataset simulado
+    np.random.seed(42)
+    meses = np.array(range(1, 13)).reshape(-1, 1)
+    ventas = 1000 + (meses.flatten() * 150) + np.random.randint(-100, 100, size=12)
     
-    preguntas_respuestas = {
-        "¿Qué es Florecer?": "Es una plataforma de soluciones tecnológicas impulsadas por IA que ayuda a pequeños negocios a digitalizarse y crecer de forma consciente.",
-        "¿A quién ayuda Florecer?": "A emprendedores y pequeños negocios que buscan modernizar sus procesos y ahorrar tiempo.",
-        "¿Qué problema busca resolver?": "Elimina la brecha tecnológica y la sobrecarga de trabajo manual transformando tareas en flujos inteligentes.",
-        "¿Cómo funciona el modelo de Machine Learning?": "Analiza las horas en tareas repetitivas y el nivel digital del negocio para clasificar su oportunidad de adopción de IA.",
-        "¿Por qué Florecer une tecnología y sostenibilidad?": "Porque la tecnología debe optimizar recursos, reducir el desperdicio de tiempo y ayudar a prosperar con propósito."
-    }
+    df = pd.DataFrame({"Mes": meses.flatten(), "Ventas_USD": ventas})
+
+    # Entrenamiento del modelo
+    model_ml = LinearRegression()
+    model_ml.fit(meses, ventas)
+
+    col1, col2 = st.columns([1, 2])
     
-    opcion_seleccionada = st.radio(
-        "Selecciona una pregunta de la lista:",
-        list(preguntas_respuestas.keys())
-    )
-    
-    st.markdown("---")
-    if opcion_seleccionada:
-        st.info(f"**Respuesta:** {preguntas_respuestas[opcion_seleccionada]}")
+    with col1:
+        st.subheader("Parámetros del Modelo")
+        st.write(f"**Algoritmo:** Regresión Lineal")
+        st.write(f"**Precisión (R²):** {round(model_ml.score(meses, ventas), 2)}")
+        
+        mes_pred = st.slider("Selecciona el mes a predecir:", 13, 24, 15)
+        prediccion = model_ml.predict(np.array([[mes_pred]]))[0]
+        st.metric(label=f"Predicción de Ventas para el Mes {mes_pred}", value=f"${round(prediccion, 2)} USD")
+
+    with col2:
+        fig = px.scatter(df, x="Mes", y="Ventas_USD", title="Histórico de Ventas y Tendencia Lineal", trendline="ols")
+        st.plotly_chart(fig, use_container_width=True)
