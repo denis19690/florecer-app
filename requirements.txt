@@ -1,4 +1,9 @@
 streamlit
 google-generativeai
 pandas
+pillow
+requests
 numpy
+plotly
+scikit-learn
+statsmodels
