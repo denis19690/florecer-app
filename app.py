@@ -120,9 +120,9 @@ with col_text:
     st.markdown('<p class="main-title">FLORECER</p>', unsafe_allow_html=True)
     st.markdown('<p class="slogan">Innovar con conciencia. Crecer para impactar.</p>', unsafe_allow_html=True)
     st.write("""
-    **Misión:** Democratizar el acceso a la inteligencia artificial y la analítica de datos para pequeñas empresas, permitiéndoles optimizar decisiones y escalar de forma consciente y eficiente[cite: 2].
+    **Misión:** Democratizar el acceso a la inteligencia artificial y la analítica de datos para pequeñas empresas, permitiéndoles optimizar decisiones y escalar de forma consciente y eficiente.
     
-    **Visión:** Ser el puente digital sostenible que conecta ideas, personas y tecnología para transformar negocios locales al año 2028[cite: 2].
+    **Visión:** Ser el puente digital sostenible que conecta ideas, personas y tecnología para transformar negocios locales al año 2028.
     """)
 
 st.divider()
@@ -147,7 +147,7 @@ menu = st.sidebar.radio(
 # -----------------------------------------------------------------------------
 if menu == "💼 1. Portafolio de Servicios":
     st.header("💼 Portafolio de Soluciones Inteligentes")
-    st.write("Explora nuestras 5 soluciones digitales diseñadas para impulsar tu negocio[cite: 2]:")
+    st.write("Explora nuestras 5 soluciones digitales diseñadas para impulsar tu negocio:")
 
     col1, col2 = st.columns(2)
 
@@ -189,21 +189,20 @@ if menu == "💼 1. Portafolio de Servicios":
 # -----------------------------------------------------------------------------
 elif menu == "🎬 2. Video Comercial (IA)":
     st.header("🎬 Video Comercial Promocional")
-    st.write("Demostración de contenido publicitario de 15 a 45 segundos generado con IA Generativa[cite: 2]:")
+    st.write("Demostración de contenido publicitario de 15 a 45 segundos generado con IA Generativa:")
 
-    # Si tienes el archivo local subido lo carga, si no muestra un placeholder informativo
     if os.path.exists("video_florecer.mp4"):
         st.video("video_florecer.mp4")
     else:
         st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-        st.info("💡 Coloca tu archivo 'video_florecer.mp4' (generado en CapCut AI / HeyGen) en la carpeta raíz para reemplazar el video de demostración[cite: 2].")
+        st.info("💡 Coloca tu archivo 'video_florecer.mp4' (generado en CapCut AI / HeyGen) en la carpeta raíz para reemplazar el video de demostración.")
 
 # -----------------------------------------------------------------------------
 # SECCIÓN 3: CHATBOT CON IA CONVERSACIONAL (Requerimiento 4.4)
 # -----------------------------------------------------------------------------
 elif menu == "🤖 3. Asistente Chatbot IA":
     st.header("🤖 Asistente Virtual Interactivo")
-    st.write("Haz cualquier consulta en texto libre sobre los servicios, precios o la visión de Florecer[cite: 2]:")
+    st.write("Haz cualquier consulta en texto libre sobre los servicios, precios o la visión de Florecer:")
 
     PROMPT_SISTEMA = """
     Eres el asistente virtual interactivo de 'Florecer', una empresa dedicada a impulsar
@@ -242,7 +241,7 @@ elif menu == "🤖 3. Asistente Chatbot IA":
 # -----------------------------------------------------------------------------
 elif menu == "📩 4. Solicitar Asesoría (n8n)":
     st.header("📩 Solicitar Asesoría Personalizada")
-    st.write("Completa el formulario para activar el flujo automatizado a través de n8n[cite: 2]:")
+    st.write("Completa el formulario para activar el flujo automatizado a través de n8n:")
 
     WEBHOOK_URL = "https://denisgreenway.app.n8n.cloud/webhook/florecer-contacto"
 
@@ -275,9 +274,9 @@ elif menu == "📩 4. Solicitar Asesoría (n8n)":
             try:
                 respuesta = requests.post(WEBHOOK_URL, json=datos_payload)
                 if respuesta.status_code in [200, 201]:
-                    st.success("✨ ¡Solicitud enviada con éxito! La automatización en n8n ha procesado tus datos[cite: 2].")
+                    st.success("✨ ¡Solicitud enviada con éxito! La automatización en n8n ha procesado tus datos.")
                 else:
-                    st.warning("⚠️ Solicitud enviada. Verifica que el Webhook en n8n esté activo[cite: 2].")
+                    st.warning("⚠️ Solicitud enviada. Verifica que el Webhook en n8n esté activo.")
             except Exception as e:
                 st.error(f"Error en la conexión con n8n: {e}")
         else:
@@ -288,7 +287,7 @@ elif menu == "📩 4. Solicitar Asesoría (n8n)":
 # -----------------------------------------------------------------------------
 elif menu == "📊 5. Dashboard & Modelo ML":
     st.header("📊 Dashboard & Modelo Predictivo de Ventas (ML)")
-    st.write("Proyección de ingresos mediante Regresión Lineal entrenada con datos históricos[cite: 2]:")
+    st.write("Proyección de ingresos mediante Regresión Lineal entrenada con datos históricos:")
 
     # Dataset simulado
     np.random.seed(42)
@@ -304,7 +303,7 @@ elif menu == "📊 5. Dashboard & Modelo ML":
 
     with col1:
         st.subheader("⚙️ Parámetros del Modelo")
-        st.write(f"**Algoritmo:** Regresión Lineal (`scikit-learn`)[cite: 2]")
+        st.write(f"**Algoritmo:** Regresión Lineal (`scikit-learn`)")
         st.write(f"**Precisión ($R^2$):** `{round(model_ml.score(meses, ventas), 2)}`")
         
         st.divider()
@@ -326,11 +325,11 @@ elif menu == "📊 5. Dashboard & Modelo ML":
 # -----------------------------------------------------------------------------
 elif menu == "💡 6. Declaración de IA Generativa":
     st.header("💡 Uso de IA Generativa en el Proyecto")
-    st.write("Declaración transparente del uso de herramientas de IA durante la creación de Florecer[cite: 2]:")
+    st.write("Declaración transparente del uso de herramientas de IA durante la creación de Florecer:")
 
     st.markdown("""
-    * **1. Generación de Código:** Uso de modelos LLM (Gemini / ChatGPT) para la arquitectura de la app web en Python y Streamlit[cite: 2].
-    * **2. Generación de Texto y Prompting:** Configuración de prompts de sistema para el chatbot conversacional `gemini-1.5-flash`[cite: 2].
-    * **3. Generación de Identidad e Imágenes:** Creación del concepto visual, marca y logo utilizando herramientas de IA Generativa[cite: 2].
-    * **4. Generación de Video Comercial:** Producción multimedia con herramientas de avatares/video de IA para la promoción del servicio[cite: 2].
+    * **1. Generación de Código:** Uso de modelos LLM (Gemini / ChatGPT) para la arquitectura de la app web en Python y Streamlit.
+    * **2. Generación de Texto y Prompting:** Configuración de prompts de sistema para el chatbot conversacional `gemini-1.5-flash`.
+    * **3. Generación de Identidad e Imágenes:** Creación del concepto visual, marca y logo utilizando herramientas de IA Generativa.
+    * **4. Generación de Video Comercial:** Producción multimedia con herramientas de avatares/video de IA para la promoción del servicio.
     """)
