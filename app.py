@@ -22,7 +22,7 @@ try:
 except Exception:
     st.title("🌱 Florecer")
 
-st.markdown("### *Innovar con conciencia. Crecer para impactar.*")
+st.write("### *Innovar con conciencia. Crecer para impactar.*")
 st.write("Democratizando el acceso a herramientas de Inteligencia Artificial y Analítica de Datos para pequeñas y medianas empresas.")
 
 st.divider()
