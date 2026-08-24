@@ -62,53 +62,6 @@ with col2:
 st.divider()
 
 # -----------------------------------------------------------------------------
-# 2. CHATBOT CON IA (TEXTO LIBRE CON GEMINI)
-# -----------------------------------------------------------------------------
-st.header("🤖 Asistente Virtual Interactivo")
-st.write("Hazme cualquier pregunta en texto libre sobre los servicios, precios o la visión de Florecer:")
-
-PROMPT_SISTEMA = """
-Eres el asistente virtual oficial de 'Florecer'.
-El eslogan de la empresa es: 'Innovar con conciencia. Crecer para impactar.'
-Nuestra misión es democratizar la IA y el análisis de datos para pequeños emprendimientos.
-Servicios ofertados:
-- Consultoría en IA ($49 USD/mes)
-- Flujo Automático ($79 USD/mes)
-- Radar de Clientes ($39 USD/mes)
-- Asistente Florecer ($120 USD/mes)
-- Impulso Florecer ($59 USD/mes)
-Responde siempre con cordialidad, profesionalismo y concisión.
-"""
-
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
-
-for msg in st.session_state.chat_history:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
-
-if pregunta := st.chat_input("Escribe tu consulta sobre Florecer aquí..."):
-    st.session_state.chat_history.append({"role": "user", "content": pregunta})
-    with st.chat_message("user"):
-        st.markdown(pregunta)
-
-    try:
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        prompt_completo = f"{PROMPT_SISTEMA}\nPregunta del cliente: {pregunta}"
-        respuesta = model.generate_content(prompt_completo)
-        
-        texto_respuesta = respuesta.text
-        
-        with st.chat_message("assistant"):
-            st.markdown(texto_respuesta)
-        st.session_state.chat_history.append({"role": "assistant", "content": texto_respuesta})
-        
-    except Exception as e:
-        st.error(f"Error al conectar con la API de Gemini: {e}")
-
-st.divider()
-
-# -----------------------------------------------------------------------------
 # 3. FORMULARIO DE AUTOMATIZACIÓN
 # -----------------------------------------------------------------------------
 st.header("📩 Solicitar Asesoría Personalizada")
