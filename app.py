@@ -225,17 +225,28 @@ elif menu == "🤖 3. Asistente Chatbot IA":
         st.session_state.messages.append({"role": "user", "content": prompt})
 
         try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
-            prompt_completo = f"{PROMPT_SISTEMA}\nPregunta del usuario: {prompt}"
-            response = model.generate_content(prompt_completo)
-            
-            with st.chat_message("assistant"):
-                st.markdown(response.text)
-            st.session_state.messages.append({"role": "assistant", "content": response.text})
-            
-        except Exception as e:
-            st.error(f"Error al conectar con la API de Gemini. Asegúrate de configurar GEMINI_API_KEY en secrets.toml. Detalles: {e}")
+            import google.generativeai as genai
 
+            genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+
+            model = genai.GenerativeModel("gemini-1.5-flash")
+
+            respuesta = model.generate_content(
+                PROMPT_SISTEMA + "\n\nConsulta del usuario:\n" + prompt
+            )
+
+            texto_respuesta = respuesta.text
+
+            st.chat_message("assistant").markdown(texto_respuesta)
+
+            st.session_state.messages.append({
+                "role": "assistant",
+                "content": texto_respuesta
+            })
+
+        except Exception as e:
+            st.error("No pude generar una respuesta en este momento.")
+            st.caption(f"Error: {e}")
 # -----------------------------------------------------------------------------
 # SECCIÓN 4: AUTOMATIZACIÓN (Requerimiento 4.5)
 # -----------------------------------------------------------------------------
