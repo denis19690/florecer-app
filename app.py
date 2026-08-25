@@ -223,19 +223,12 @@ elif menu == "🤖 3. Asistente Chatbot IA":
     if prompt := st.chat_input("Escribe tu consulta aquí..."):
         st.chat_message("user").markdown(prompt)
         st.session_state.messages.append({"role": "user", "content": prompt})
-
-        try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
-            prompt_completo = f"{PROMPT_SISTEMA}\nPregunta del usuario: {prompt}"
-            response = model.generate_content(prompt_completo)
             
             with st.chat_message("assistant"):
                 st.markdown(response.text)
             st.session_state.messages.append({"role": "assistant", "content": response.text})
             
-        except Exception as e:
-            st.error(f"Error al conectar con la API de Gemini. Asegúrate de configurar GEMINI_API_KEY en secrets.toml. Detalles: {e}")
-
+      
 # -----------------------------------------------------------------------------
 # SECCIÓN 4: AUTOMATIZACIÓN
 # -----------------------------------------------------------------------------
