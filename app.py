@@ -99,7 +99,7 @@ if "GEMINI_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
 # -----------------------------------------------------------------------------
-# 2. ENCABEZADO E IDENTIDAD DEL PROYECTO (Requerimiento 4.1)
+# 2. ENCABEZADO E IDENTIDAD DEL PROYECTO
 # -----------------------------------------------------------------------------
 col_logo, col_text = st.columns([1, 2])
 
@@ -143,7 +143,7 @@ menu = st.sidebar.radio(
 )
 
 # -----------------------------------------------------------------------------
-# SECCIÓN 1: PORTAFOLIO DE SERVICIOS (Requerimiento 4.2)
+# SECCIÓN 1: PORTAFOLIO DE SERVICIOS
 # -----------------------------------------------------------------------------
 if menu == "💼 1. Portafolio de Servicios":
     st.header("💼 Portafolio de Soluciones Inteligentes")
@@ -185,7 +185,7 @@ if menu == "💼 1. Portafolio de Servicios":
         """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# SECCIÓN 2: CONTENIDO MULTIMEDIA CON IA (Requerimiento 4.3)
+# SECCIÓN 2: CONTENIDO MULTIMEDIA CON IA
 # -----------------------------------------------------------------------------
 elif menu == "🎬 2. Video Comercial (IA)":
     st.header("🎬 Video Comercial Promocional")
@@ -198,7 +198,7 @@ elif menu == "🎬 2. Video Comercial (IA)":
         st.info("💡 Coloca tu archivo 'video_florecer.mp4' (generado en CapCut AI / HeyGen) en la carpeta raíz para reemplazar el video de demostración.")
 
 # -----------------------------------------------------------------------------
-# SECCIÓN 3: CHATBOT CON IA CONVERSACIONAL (Requerimiento 4.4)
+# SECCIÓN 3: CHATBOT CON IA CONVERSACIONAL
 # -----------------------------------------------------------------------------
 elif menu == "🤖 3. Asistente Chatbot IA":
     st.header("🤖 Asistente Virtual Interactivo")
@@ -225,30 +225,19 @@ elif menu == "🤖 3. Asistente Chatbot IA":
         st.session_state.messages.append({"role": "user", "content": prompt})
 
         try:
-            import google.generativeai as genai
-
-            genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-
             model = genai.GenerativeModel("gemini-1.5-flash")
-
-            respuesta = model.generate_content(
-                PROMPT_SISTEMA + "\n\nConsulta del usuario:\n" + prompt
-            )
-
-            texto_respuesta = respuesta.text
-
-            st.chat_message("assistant").markdown(texto_respuesta)
-
-            st.session_state.messages.append({
-                "role": "assistant",
-                "content": texto_respuesta
-            })
-
+            prompt_completo = f"{PROMPT_SISTEMA}\nPregunta del usuario: {prompt}"
+            response = model.generate_content(prompt_completo)
+            
+            with st.chat_message("assistant"):
+                st.markdown(response.text)
+            st.session_state.messages.append({"role": "assistant", "content": response.text})
+            
         except Exception as e:
-            st.error("No pude generar una respuesta en este momento.")
-            st.caption(f"Error: {e}")
+            st.error(f"Error al conectar con la API de Gemini. Asegúrate de configurar GEMINI_API_KEY en secrets.toml. Detalles: {e}")
+
 # -----------------------------------------------------------------------------
-# SECCIÓN 4: AUTOMATIZACIÓN (Requerimiento 4.5)
+# SECCIÓN 4: AUTOMATIZACIÓN
 # -----------------------------------------------------------------------------
 elif menu == "📩 4. Solicitar Asesoría (n8n)":
     st.header("📩 Solicitar Asesoría Personalizada")
@@ -294,7 +283,7 @@ elif menu == "📩 4. Solicitar Asesoría (n8n)":
             st.warning("Por favor completa los campos obligatorios antes de enviar.")
 
 # -----------------------------------------------------------------------------
-# SECCIÓN 5: MODELO DE MACHINE LEARNING Y DASHBOARD (Requerimiento 4.7)
+# SECCIÓN 5: MODELO DE MACHINE LEARNING Y DASHBOARD
 # -----------------------------------------------------------------------------
 elif menu == "📊 5. Dashboard & Modelo ML":
     st.header("📊 Dashboard & Modelo Predictivo de Ventas (ML)")
@@ -332,7 +321,7 @@ elif menu == "📊 5. Dashboard & Modelo ML":
         st.plotly_chart(fig, use_container_width=True)
 
 # -----------------------------------------------------------------------------
-# SECCIÓN 6: DECLARACIÓN DE USO DE IA GENERATIVA (Requerimiento 4.6)
+# SECCIÓN 6: DECLARACIÓN DE USO DE IA GENERATIVA
 # -----------------------------------------------------------------------------
 elif menu == "💡 6. Declaración de IA Generativa":
     st.header("💡 Uso de IA Generativa en el Proyecto")
