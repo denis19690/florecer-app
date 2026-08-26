@@ -169,8 +169,8 @@ elif opcion == "📩 4. Solicitar Asesoría (n8n)":
     st.title("📩 4. Solicitar Asesoría (Automatización n8n)")
     st.write("Envía tu requerimiento para activar el flujo automatizado en n8n:")
     
-    # Reemplaza esta URL por la Webhook Production URL activa de tu n8n
-    N8N_WEBHOOK_URL = "https://primary-production-386d.up.railway.app/webhook/solicitud-asesoria"
+    # PEGA AQUÍ TU URL DE PRODUCCIÓN COPIADA DE N8N:
+    N8N_WEBHOOK_URL = "https://tu-instancia-n8n.com/webhook/solicitud-asesoria"
 
     with st.form("form_n8n"):
         col_a, col_b = st.columns(2)
@@ -185,22 +185,24 @@ elif opcion == "📩 4. Solicitar Asesoría (n8n)":
         enviar = st.form_submit_button("Enviar Solicitud")
         
         if enviar:
-            datos_payload = {
-                "nombre": nombre,
-                "correo": correo,
-                "empresa": empresa,
-                "servicio": servicio,
-                "mensaje": mensaje
-            }
-            try:
-                res = requests.post(N8N_WEBHOOK_URL, json=datos_payload, timeout=5)
-                if res.status_code == 200:
-                    st.success(f"✅ ¡Solicitud procesada! Flujo de n8n activado correctamente para {correo}.")
-                else:
-                    st.success(f"✅ Formulario recibido. Notificación generada para {correo}.")
-            except Exception:
-                st.success(f"✅ ¡Formulario enviado exitosamente! Requerimiento registrado para {correo}.")
-
+            if not correo or "@" not in correo:
+                st.error("⚠️ Por favor ingresa un correo electrónico válido.")
+            else:
+                datos_payload = {
+                    "nombre": nombre,
+                    "correo": correo,
+                    "empresa": empresa,
+                    "servicio": servicio,
+                    "mensaje": mensaje
+                }
+                try:
+                    res = requests.post(N8N_WEBHOOK_URL, json=datos_payload, timeout=8)
+                    if res.status_code == 200:
+                        st.success(f"✅ ¡Solicitud enviada a n8n! Se ha activado el envío del correo a **{correo}**.")
+                    else:
+                        st.warning(f"⚠️ El Webhook respondió con código {res.status_code}. Revisa si el flujo en n8n está Activo.")
+                except Exception as e:
+                    st.error(f"❌ Error al conectar con la URL de n8n. Revisa que N8N_WEBHOOK_URL sea correcta.")
 # -------------------------------------------------------------------
 # 5. DASHBOARD & MODELO ML
 # -------------------------------------------------------------------
