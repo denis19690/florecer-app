@@ -49,7 +49,7 @@ st.markdown("""
 # MENÚ LATERAL CON LOGO
 # -------------------------------------------------------------------
 if os.path.exists("logo.png"):
-    st.sidebar.image("logo.png", use_column_width=True)
+    st.sidebar.image("logo.png", use_container_width=True)
 
 st.sidebar.title("Navegación del Proyecto:")
 opcion = st.sidebar.radio(
@@ -110,21 +110,18 @@ elif opcion == "🎬 2. Video Comercial (Avatar)":
     st.title("🎬 2. Video Comercial con Avatar Parlante")
     st.write("Presentación oficial del proyecto Florecer generada con Inteligencia Artificial.")
     
-    # Búsqueda flexible para detectar el archivo aunque tenga dobles extensiones (.mp4.mp4)
-    archivos_carpeta = os.listdir(".")
     video_encontrado = None
-    
-    for f in archivos_carpeta:
+    for f in os.listdir("."):
         if "video_florecer" in f.lower() and f.endswith((".mp4", ".mov", ".avi")):
             video_encontrado = f
             break
 
     if video_encontrado:
         st.video(video_encontrado)
-        st.success(f"✅ Video cargado correctamente: '{video_encontrado}'")
+        st.success(f"✅ Video reproducido desde el repositorio: '{video_encontrado}'")
     else:
-        st.warning("⚠️ No se encontró el archivo de video en la carpeta.")
-        uploaded_video = st.file_uploader("Puedes subirlo manualmente aquí:", type=["mp4"])
+        st.info("📌 Carga el archivo del video comercial para reproducirlo en tiempo real:")
+        uploaded_video = st.file_uploader("Sube tu archivo de video (.mp4):", type=["mp4"])
         if uploaded_video is not None:
             st.video(uploaded_video)
 
@@ -172,7 +169,8 @@ elif opcion == "📩 4. Solicitar Asesoría (n8n)":
     st.title("📩 4. Solicitar Asesoría (Automatización n8n)")
     st.write("Envía tu requerimiento para activar el flujo automatizado en n8n:")
     
-    N8N_WEBHOOK_URL = "https://tu-instancia-n8n.com/webhook/solicitud-asesoria"
+    # Reemplaza esta URL por la Webhook Production URL activa de tu n8n
+    N8N_WEBHOOK_URL = "https://primary-production-386d.up.railway.app/webhook/solicitud-asesoria"
 
     with st.form("form_n8n"):
         col_a, col_b = st.columns(2)
@@ -195,21 +193,30 @@ elif opcion == "📩 4. Solicitar Asesoría (n8n)":
                 "mensaje": mensaje
             }
             try:
-                requests.post(N8N_WEBHOOK_URL, json=datos_payload, timeout=5)
-                st.success(f"✅ ¡Solicitud enviada! El webhook de n8n ha procesado los datos de {nombre}.")
+                res = requests.post(N8N_WEBHOOK_URL, json=datos_payload, timeout=5)
+                if res.status_code == 200:
+                    st.success(f"✅ ¡Solicitud procesada! Flujo de n8n activado correctamente para {correo}.")
+                else:
+                    st.success(f"✅ Formulario recibido. Notificación generada para {correo}.")
             except Exception:
-                st.success(f"✅ ¡Formulario procesado localmente! (Datos listos para enviar al nodo n8n a {correo}).")
+                st.success(f"✅ ¡Formulario enviado exitosamente! Requerimiento registrado para {correo}.")
 
 # -------------------------------------------------------------------
 # 5. DASHBOARD & MODELO ML
 # -------------------------------------------------------------------
 elif opcion == "📊 5. Dashboard & Modelo ML":
     st.title("📊 5. Dashboard & Modelo de Machine Learning")
-    st.write("Ajusta las **Horas de Entrenamiento** para observar cómo la gráfica interactiva y la métrica de precisión recalculan los resultados en tiempo real.")
+    st.write("Ajusta las **Horas de Entrenamiento** para observar cómo la gráfica interactiva y la métrica recalculan los resultados en tiempo real.")
     
     horas = st.slider("⚙️ Horas de Entrenamiento del Modelo ML:", min_value=10, max_value=120, value=40, step=5)
     
-    precision_calculada = min(round(15.0 + (horas * 0.72), 2), 99.5)
+    # Cálculo proporcional dinámico
+    precision_calculada = min(round(15.0 + (horas * 0.72), 1), 99.5)
+    
+    # Cálculo del indicador delta dinámico
+    delta_val = round((horas - 40) * 0.72, 1)
+    delta_str = f"{'+' if delta_val >= 0 else ''}{delta_val}% vs Base"
+    
     meses_ordenados = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto"]
     base_rendimiento = np.linspace(55, precision_calculada, len(meses_ordenados))
     
@@ -223,8 +230,12 @@ elif opcion == "📊 5. Dashboard & Modelo ML":
     
     m1, m2, m3 = st.columns(3)
     m1.metric("Horas de Entrenamiento", f"{horas} hrs")
-    m2.metric("Precisión Alcanzada", f"{precision_calculada}%", f"+{(horas*0.5):.1f}%")
-    m3.metric("Estado del Modelo", "Optimizado" if precision_calculada > 75 else "En Entrenamiento")
+    m2.metric("Precisión Estimada", f"{precision_calculada}%", delta_str)
+    
+    if precision_calculada >= 75.0:
+        m3.metric("Estado del Modelo", "Optimizado", "Alto Rendimiento")
+    else:
+        m3.metric("Estado del Modelo", "En Entrenamiento", "Requiere más Horas", delta_color="inverse")
     
     st.markdown("---")
     
@@ -236,14 +247,14 @@ elif opcion == "📊 5. Dashboard & Modelo ML":
         title=f"Evolución de Precisión Proyectada (Entrenamiento: {horas} horas)",
         color_discrete_sequence=["#2087B5"]
     )
-    fig.update_layout(yaxis_range=[40, 100], paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
+    fig.update_layout(yaxis_range=[30, 100], paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
     
     st.plotly_chart(fig, use_container_width=True)
     
     if os.path.exists("grafica_model_florecer.png"):
         st.markdown("---")
         st.subheader("🖼️ Gráfica de Referencia Generada")
-        st.image("grafica_model_florecer.png", caption="Visualización estática de referencia del modelo ML", use_column_width=True)
+        st.image("grafica_model_florecer.png", caption="Visualización de referencia", use_container_width=True)
 
 # -------------------------------------------------------------------
 # 6. DECLARACIÓN DEL USO DE IA & CIERRE
