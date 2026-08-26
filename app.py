@@ -6,7 +6,7 @@ import requests
 import os
 
 # -------------------------------------------------------------------
-# 1. CONFIGURACIÓN DE PÁGINA Y PALETA DE COLORES EXACTA
+# 1. CONFIGURACIÓN DE PÁGINA Y PALETA DE COLORES
 # -------------------------------------------------------------------
 st.set_page_config(
     page_title="Florecer - Innovación con Conciencia",
@@ -46,8 +46,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -------------------------------------------------------------------
-# MENÚ LATERAL
+# MENÚ LATERAL CON LOGO
 # -------------------------------------------------------------------
+if os.path.exists("logo.png"):
+    st.sidebar.image("logo.png", use_column_width=True)
+
 st.sidebar.title("Navegación del Proyecto:")
 opcion = st.sidebar.radio(
     "",
@@ -107,14 +110,21 @@ elif opcion == "🎬 2. Video Comercial (Avatar)":
     st.title("🎬 2. Video Comercial con Avatar Parlante")
     st.write("Presentación oficial del proyecto Florecer generada con Inteligencia Artificial.")
     
-    video_file = "video_florecer.mp4"
+    # Búsqueda flexible para detectar el archivo aunque tenga dobles extensiones (.mp4.mp4)
+    archivos_carpeta = os.listdir(".")
+    video_encontrado = None
     
-    if os.path.exists(video_file):
-        st.video(video_file)
-        st.success("✅ Video cargado automáticamente desde la carpeta del proyecto.")
+    for f in archivos_carpeta:
+        if "video_florecer" in f.lower() and f.endswith((".mp4", ".mov", ".avi")):
+            video_encontrado = f
+            break
+
+    if video_encontrado:
+        st.video(video_encontrado)
+        st.success(f"✅ Video cargado correctamente: '{video_encontrado}'")
     else:
-        st.warning(f"⚠️ No se encontró el archivo '{video_file}' en la carpeta raíz.")
-        uploaded_video = st.file_uploader("O sube el archivo directamente aquí para probarlo:", type=["mp4"])
+        st.warning("⚠️ No se encontró el archivo de video en la carpeta.")
+        uploaded_video = st.file_uploader("Puedes subirlo manualmente aquí:", type=["mp4"])
         if uploaded_video is not None:
             st.video(uploaded_video)
 
@@ -229,7 +239,11 @@ elif opcion == "📊 5. Dashboard & Modelo ML":
     fig.update_layout(yaxis_range=[40, 100], paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
     
     st.plotly_chart(fig, use_container_width=True)
-    st.info(f"💡 **Explicación del Modelo:** Al seleccionar **{horas} horas**, el algoritmo ajusta sus pesos internos incrementando la precisión proyectada a **{precision_calculada}%** a lo largo del periodo Enero-Agosto.")
+    
+    if os.path.exists("grafica_model_florecer.png"):
+        st.markdown("---")
+        st.subheader("🖼️ Gráfica de Referencia Generada")
+        st.image("grafica_model_florecer.png", caption="Visualización estática de referencia del modelo ML", use_column_width=True)
 
 # -------------------------------------------------------------------
 # 6. DECLARACIÓN DEL USO DE IA & CIERRE
