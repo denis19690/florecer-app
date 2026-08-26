@@ -1,12 +1,11 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import plotly.express as px
 import requests
 import os
 
 # -------------------------------------------------------------------
-# 1. CONFIGURACIÓN DE PÁGINA Y PALETA (Naranja de tono principal)
+# 1. CONFIGURACIÓN DE PÁGINA Y PALETA
 # -------------------------------------------------------------------
 st.set_page_config(
     page_title="Florecer - Innovación con Conciencia",
@@ -42,6 +41,13 @@ st.markdown("""
         margin-bottom: 15px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
+    .mission-vision {
+        background-color: #FFFFFF;
+        padding: 20px;
+        border-radius: 12px;
+        border-top: 4px solid #2087B5;
+        margin-bottom: 20px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -68,10 +74,26 @@ st.sidebar.markdown("---")
 st.sidebar.info("🌱 **FLORECER**\nInnovar con conciencia. Crecer para impactar.")
 
 # -------------------------------------------------------------------
-# 1. PORTAFOLIO DE SERVICIOS
+# 1. PORTAFOLIO DE SERVICIOS + LOGO, MISIÓN Y VISIÓN
 # -------------------------------------------------------------------
 if opcion == "💼 1. Portafolio de Servicios":
-    st.title("💼 1. Portafolio de Servicios")
+    # Muestra del Logo, Misión y Visión en la cabecera
+    col_logo, col_info = st.columns([1, 2])
+    with col_logo:
+        if os.path.exists("logo.png"):
+            st.image("logo.png", use_container_width=True)
+        else:
+            st.title("🌱 FLORECER")
+    with col_info:
+        st.markdown("""
+        <div class="mission-vision">
+            <h3 style="color:#FFB268; margin-top:0;">🌱 Proyecto Florecer</h3>
+            <p><b>Misión:</b> Potenciar la transformación digital de organizaciones y personas mediante la integración ética de Inteligencia Artificial, automatización y soluciones digitales orientadas al impacto positivo.</p>
+            <p><b>Visión:</b> Ser un referente de desarrollo tecnológico consciente, demostrando que la innovación y el crecimiento pueden coexistir en armonía con el bienestar humano.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.title("💼 Portafolio de Servicios")
     st.write("Soluciones digitales diseñadas bajo el equilibrio entre tecnología y humanidad.")
     
     servicios = [
@@ -194,11 +216,11 @@ elif opcion == "📩 4. Solicitar Asesoría (n8n)":
                     st.success(f"✅ Formulario recibido exitosamente para **{correo}**.")
 
 # -------------------------------------------------------------------
-# 5. DASHBOARD & MODELO ML
+# 5. DASHBOARD & MODELO ML (Sin gráfica)
 # -------------------------------------------------------------------
 elif opcion == "📊 5. Dashboard & Modelo ML":
     st.title("📊 5. Dashboard & Modelo de Machine Learning")
-    st.write("Ajusta las **Horas de Entrenamiento** para observar cómo la gráfica interactiva y la métrica recalculan los resultados en tiempo real.")
+    st.write("Ajusta los parámetros para observar los resultados proyectados del modelo en tiempo real:")
     
     horas = st.slider("⚙️ Horas de Entrenamiento del Modelo ML:", min_value=10, max_value=120, value=40, step=5)
     
@@ -206,16 +228,7 @@ elif opcion == "📊 5. Dashboard & Modelo ML":
     delta_val = round((horas - 40) * 0.72, 1)
     delta_str = f"{'+' if delta_val >= 0 else ''}{delta_val}% vs Base"
     
-    meses_ordenados = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto"]
-    base_rendimiento = np.linspace(55, precision_calculada, len(meses_ordenados))
-    
-    df_ml = pd.DataFrame({
-        "Mes": meses_ordenados,
-        "Precisión Modelo (%)": base_rendimiento
-    })
-    
-    df_ml['Mes'] = pd.Categorical(df_ml['Mes'], categories=meses_ordenados, ordered=True)
-    df_ml = df_ml.sort_values('Mes')
+    st.markdown("---")
     
     m1, m2, m3 = st.columns(3)
     m1.metric("Horas de Entrenamiento", f"{horas} hrs")
@@ -225,20 +238,13 @@ elif opcion == "📊 5. Dashboard & Modelo ML":
         m3.metric("Estado del Modelo", "Optimizado", "Alto Rendimiento")
     else:
         m3.metric("Estado del Modelo", "En Entrenamiento", "Requiere más Horas", delta_color="inverse")
-    
-    st.markdown("---")
-    
-    fig = px.line(
-        df_ml, 
-        x="Mes", 
-        y="Precisión Modelo (%)", 
-        markers=True,
-        title=f"Evolución de Precisión Proyectada (Entrenamiento: {horas} horas)",
-        color_discrete_sequence=["#FFB268"]
-    )
-    fig.update_layout(yaxis_range=[30, 100], paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
-    
-    st.plotly_chart(fig, use_container_width=True)
+
+    st.markdown("""
+    <div class="card-box" style="margin-top:25px;">
+        <h4 style="color:#2087B5;">📌 Resumen de Estimación de Machine Learning</h4>
+        <p>El modelo utiliza un algoritmo de regresión ajustado para proyectar el rendimiento de la herramienta en función del volumen de datos y horas de procesamiento acumuladas.</p>
+    </div>
+    """, unsafe_allow_html=True)
 
 # -------------------------------------------------------------------
 # 6. DECLARACIÓN DEL USO DE IA & CIERRE
@@ -254,7 +260,7 @@ elif opcion == "💡 6. Declaración de IA & Cierre":
             <li><b>D-ID & Canva:</b> Generación del avatar parlante animado y estructuración del diseño visual corporativo.</li>
             <li><b>Gemini API / Botpress:</b> Construcción de la base de conocimiento y arquitectura de diálogo del chatbot.</li>
             <li><b>n8n:</b> Automatización del flujo de trabajo y captura de requerimientos vía webhooks.</li>
-            <li><b>Scikit-Learn, Pandas & Plotly:</b> Implementación del modelo predictivo y visualización dinámica de datos en Streamlit.</li>
+            <li><b>Scikit-Learn, Pandas & Streamlit:</b> Implementación del modelo predictivo y panel interactivo.</li>
         </ul>
     </div>
     
