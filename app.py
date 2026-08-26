@@ -42,13 +42,6 @@ st.markdown("""
         margin-bottom: 15px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
-    .card-lavanda {
-        background-color: #B798E6;
-        color: white;
-        padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 10px;
-    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -114,16 +107,14 @@ elif opcion == "🎬 2. Video Comercial (Avatar)":
     st.title("🎬 2. Video Comercial con Avatar Parlante")
     st.write("Presentación oficial del proyecto Florecer generada con Inteligencia Artificial.")
     
-    # Nombre exacto del video guardado en la misma carpeta que app.py
     video_file = "video_florecer.mp4"
     
     if os.path.exists(video_file):
         st.video(video_file)
         st.success("✅ Video cargado automáticamente desde la carpeta del proyecto.")
     else:
-        st.warning(f"⚠️ No se encontró el archivo '{video_file}' en la ruta actual: {os.getcwd()}")
-        st.info("Asegúrate de copiar tu archivo MP4 a esa carpeta y renombrarlo como 'video_florecer.mp4'.")
-        uploaded_video = st.file_uploader("O sube temporalmente el archivo aquí:", type=["mp4"])
+        st.warning(f"⚠️ No se encontró el archivo '{video_file}' en la carpeta raíz.")
+        uploaded_video = st.file_uploader("O sube el archivo directamente aquí para probarlo:", type=["mp4"])
         if uploaded_video is not None:
             st.video(uploaded_video)
 
@@ -153,7 +144,7 @@ elif opcion == "🤖 3. Asistente Chatbot IA":
             resp = "🌱 **Florecer** es un ecosistema digital que integra Inteligencia Artificial, automatización y desarrollo con sentido humano."
         elif "mision" in q or "proposito" in q:
             resp = "🎯 Nuestra misión es transformar negocios conectando naturaleza, tecnología y personas mediante aprendizaje y acción consciente."
-        elif "servicio" in q or "hacen" q:
+        elif "servicio" in q or "hacen" in q:
             resp = "💡 Ofrecemos Consultoría IA, Automatización n8n, Chatbots, Analítica Predictiva y Multimedia Generativa."
         elif "contacto" in q or "asesoria" in q:
             resp = "📩 Puedes solicitar una asesoría directa desde la sección 4 del menú lateral."
@@ -171,7 +162,6 @@ elif opcion == "📩 4. Solicitar Asesoría (n8n)":
     st.title("📩 4. Solicitar Asesoría (Automatización n8n)")
     st.write("Envía tu requerimiento para activar el flujo automatizado en n8n:")
     
-    # Pega aquí la URL Webhook de tu flujo en n8n
     N8N_WEBHOOK_URL = "https://tu-instancia-n8n.com/webhook/solicitud-asesoria"
 
     with st.form("form_n8n"):
@@ -195,29 +185,22 @@ elif opcion == "📩 4. Solicitar Asesoría (n8n)":
                 "mensaje": mensaje
             }
             try:
-                # Envío directo del Webhook a n8n
-                respuesta = requests.post(N8N_WEBHOOK_URL, json=datos_payload, timeout=5)
-                st.success(f"✅ ¡Solicitud enviada! El webhook de n8n ha procesado los datos de {nombre} y enviará la notificación al correo.")
-            except Exception as e:
-                # Muestra de confirmación limpia para entorno de prueba
-                st.success(f"✅ ¡Formulario procesado localmente! (Datos listos para enviar al nodo n8n para enviar correo a {correo}).")
+                requests.post(N8N_WEBHOOK_URL, json=datos_payload, timeout=5)
+                st.success(f"✅ ¡Solicitud enviada! El webhook de n8n ha procesado los datos de {nombre}.")
+            except Exception:
+                st.success(f"✅ ¡Formulario procesado localmente! (Datos listos para enviar al nodo n8n a {correo}).")
 
 # -------------------------------------------------------------------
-# 5. DASHBOARD & MODELO ML (DINÁMICO CON ORDEN DE MESES)
+# 5. DASHBOARD & MODELO ML
 # -------------------------------------------------------------------
 elif opcion == "📊 5. Dashboard & Modelo ML":
     st.title("📊 5. Dashboard & Modelo de Machine Learning")
     st.write("Ajusta las **Horas de Entrenamiento** para observar cómo la gráfica interactiva y la métrica de precisión recalculan los resultados en tiempo real.")
     
-    # Slider de interacción
     horas = st.slider("⚙️ Horas de Entrenamiento del Modelo ML:", min_value=10, max_value=120, value=40, step=5)
     
-    # Cálculo dinámico de precisión y datos en orden cronológico
-     precision_calculada = min(round(15.0 + (horas * 0.72), 2), 99.5)
-    
+    precision_calculada = min(round(15.0 + (horas * 0.72), 2), 99.5)
     meses_ordenados = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto"]
-    
-    # Generación de valores dinámicos para el gráfico basados en las horas seleccionadas
     base_rendimiento = np.linspace(55, precision_calculada, len(meses_ordenados))
     
     df_ml = pd.DataFrame({
@@ -225,11 +208,9 @@ elif opcion == "📊 5. Dashboard & Modelo ML":
         "Precisión Modelo (%)": base_rendimiento
     })
     
-    # Asegurar el orden de los meses en la gráfica
     df_ml['Mes'] = pd.Categorical(df_ml['Mes'], categories=meses_ordenados, ordered=True)
     df_ml = df_ml.sort_values('Mes')
     
-    # Métricas principales
     m1, m2, m3 = st.columns(3)
     m1.metric("Horas de Entrenamiento", f"{horas} hrs")
     m2.metric("Precisión Alcanzada", f"{precision_calculada}%", f"+{(horas*0.5):.1f}%")
@@ -237,7 +218,6 @@ elif opcion == "📊 5. Dashboard & Modelo ML":
     
     st.markdown("---")
     
-    # Gráfica interactiva con Plotly que SE ACTUALIZA al mover el slider
     fig = px.line(
         df_ml, 
         x="Mes", 
