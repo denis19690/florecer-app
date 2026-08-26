@@ -6,44 +6,33 @@ import requests
 import os
 
 # -------------------------------------------------------------------
-# 1. CONFIGURACIÓN DE PÁGINA Y PALETA DE COLORES
+# 1. PORTAFOLIO DE SERVICIOS
 # -------------------------------------------------------------------
-st.set_page_config(
-    page_title="Florecer - Innovación con Conciencia",
-    page_icon="🌱",
-    layout="wide"
-)
-
-# Paleta: Naranja #FFB268, Aguamarina #2087B5, Verde #7BC98F, Lavanda #B798E6, Crema #F5EFE3
-st.markdown("""
-    <style>
-    .stApp {
-        background-color: #F5EFE3;
-    }
-    h1, h2, h3 {
-        color: #2087B5 !important;
-    }
-    .stButton>button {
-        background-color: #7BC98F;
-        color: #FFFFFF;
-        border-radius: 8px;
-        border: none;
-        font-weight: bold;
-    }
-    .stButton>button:hover {
-        background-color: #FFB268;
-        color: #FFFFFF;
-    }
-    .card-box {
-        background-color: #FFFFFF;
-        padding: 18px;
-        border-radius: 12px;
-        border-left: 6px solid #2087B5;
-        margin-bottom: 15px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    </style>
-""", unsafe_allow_html=True)
+elif opcion == "💼 1. Portafolio de Servicios":
+    st.title("💼 1. Portafolio de Servicios")
+    st.write("Soluciones digitales diseñadas bajo el equilibrio entre tecnología y humanidad.")
+    
+    servicios = [
+        {"nombre": "1. Consultoría en IA Generativa", "precio": "$450 USD", "desc": "Implementación estratégica de modelos generativos y asistentes a la medida.", "img": "servicio1.png"},
+        {"nombre": "2. Automatización de Flujos (n8n)", "precio": "$300 USD", "desc": "Integración de procesos con webhooks para optimizar el envío de correos y datos.", "img": "servicio2.png"},
+        {"nombre": "3. Chatbots Inteligentes", "precio": "$350 USD", "desc": "Agentes conversacionales con memoria y entrenamiento contextual.", "img": "servicio3.png"},
+        {"nombre": "4. Dashboards & Analítica ML", "precio": "$500 USD", "desc": "Visualizaciones interactivas y modelos predictivos de comportamiento.", "img": "servicio4.png"},
+        {"nombre": "5. Identidad & Multimedia con IA", "precio": "$250 USD", "desc": "Diseño de marca, piezas visuales y avatares parlantes personalizados.", "img": "servicio5.png"}
+    ]
+    
+    col1, col2 = st.columns(2)
+    for idx, s in enumerate(servicios):
+        col = col1 if idx % 2 == 0 else col2
+        with col:
+            st.markdown(f"""
+            <div class="card-box">
+                <h4 style="color:#2087B5;">{s['nombre']}</h4>
+                <p><b>Inversión estimada:</b> {s['precio']}</p>
+                <p>{s['desc']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+            if os.path.exists(s['img']):
+                st.image(s['img'], use_container_width=True)
 
 # -------------------------------------------------------------------
 # MENÚ LATERAL CON LOGO
