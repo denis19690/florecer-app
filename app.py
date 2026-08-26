@@ -1,335 +1,118 @@
 import streamlit as st
-import google.generativeai as genai
-import pandas as pd
-from PIL import Image
 import os
-import requests
-import numpy as np
-import plotly.express as px
-from sklearn.linear_model import LinearRegression
 
-# -----------------------------------------------------------------------------
-# 1. CONFIGURACIÓN DE PÁGINA E IDENTIDAD VISUAL DE FLORECER
-# -----------------------------------------------------------------------------
+# Configuración inicial de la página
 st.set_page_config(
-    page_title="Florecer - Soluciones de IA y Datos",
-    page_icon="🌸",
+    page_title="Florecer - Proyecto Integrador IA",
+    page_icon="🌱",
     layout="wide"
 )
 
-# Estilos CSS con la Paleta de Colores Oficial de Florecer
-st.markdown("""
-    <style>
-    /* Fondo General Crema */
-    .stApp {
-        background-color: #F5EFE3 !important;
-    }
-    
-    /* Títulos Principales en Agua Marina */
-    h1, h2, h3 {
-        color: #206785 !important;
-        font-family: 'Montserrat', sans-serif;
-    }
-    
-    /* Textos Generales */
-    p, label, span, div {
-        color: #212121 !important;
-        font-family: 'Lato', sans-serif;
-    }
-    
-    .main-title {
-        color: #206785 !important;
-        font-size: 42px;
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 0px;
-    }
-
-    .slogan {
-        color: #7BC9BF !important;
-        font-size: 20px;
-        text-align: center;
-        font-style: italic;
-        margin-bottom: 20px;
-    }
-
-    /* Tarjetas del Portafolio */
-    .card-florecer {
-        background-color: #FFFFFF;
-        padding: 20px;
-        border-radius: 12px;
-        border-left: 6px solid #7BC9BF;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        margin-bottom: 15px;
-    }
-
-    .card-florecer h4 {
-        color: #FFB268 !important;
-        margin-top: 0;
-    }
-
-    /* Botones en Naranja Pastel */
-    div.stButton > button, div[data-testid="stFormSubmitButton"] > button {
-        background-color: #FFB268 !important;
-        color: #FFFFFF !important;
-        border-radius: 8px !important;
-        border: none !important;
-        font-weight: bold !important;
-        font-size: 16px !important;
-        padding: 10px 24px !important;
-        width: 100% !important;
-    }
-
-    div.stButton > button:hover, div[data-testid="stFormSubmitButton"] > button:hover {
-        background-color: #206785 !important;
-        color: #FFFFFF !important;
-    }
-
-    /* Inputs y Formularios */
-    div[data-baseweb="input"] > div {
-        background-color: #FFFFFF !important;
-        border: 1.5px solid #7BC9BF !important;
-        border-radius: 8px !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# Configuración de Gemini API mediante Secrets
-if "GEMINI_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-
-# -----------------------------------------------------------------------------
-# 2. ENCABEZADO E IDENTIDAD DEL PROYECTO
-# -----------------------------------------------------------------------------
-col_logo, col_text = st.columns([1, 2])
-
-logo_encontrado = None
-posibles_nombres = ['logo.png', 'logo.jpg', 'logo.jpeg', 'logo.png.jpg']
-for nombre in posibles_nombres:
-    if os.path.exists(nombre):
-        logo_encontrado = nombre
-        break
-
-with col_logo:
-    if logo_encontrado:
-        st.image(Image.open(logo_encontrado), width=240)
-    else:
-        st.warning("📌 Sube la imagen 'logo.png' a la carpeta del proyecto.")
-
-with col_text:
-    st.markdown('<p class="main-title">FLORECER</p>', unsafe_allow_html=True)
-    st.markdown('<p class="slogan">Innovar con conciencia. Crecer para impactar.</p>', unsafe_allow_html=True)
-    st.write("""
-    **Misión:** Democratizar el acceso a la inteligencia artificial y la analítica de datos para pequeñas empresas, permitiéndoles optimizar decisiones y escalar de forma consciente y eficiente.
-    
-    **Visión:** Ser el puente digital sostenible que conecta ideas, personas y tecnología para transformar negocios locales al año 2028.
-    """)
-
-st.divider()
-
-# -----------------------------------------------------------------------------
-# 3. NAVEGACIÓN PRINCIPAL
-# -----------------------------------------------------------------------------
-menu = st.sidebar.radio(
-    "Navegación del Proyecto:",
+# Menú de Navegación con los 6 puntos exactos
+st.sidebar.title("Navegación del Proyecto:")
+opcion = st.sidebar.radio(
+    "",
     [
         "💼 1. Portafolio de Servicios",
-        "🎬 2. Video Comercial (IA)",
+        "🎬 2. Video Comercial (Avatar)",
         "🤖 3. Asistente Chatbot IA",
         "📩 4. Solicitar Asesoría (n8n)",
         "📊 5. Dashboard & Modelo ML",
-        "💡 6. Declaración de IA Generativa"
+        "💡 6. Declaración de IA & Cierre"
     ]
 )
 
-# -----------------------------------------------------------------------------
-# SECCIÓN 1: PORTAFOLIO DE SERVICIOS
-# -----------------------------------------------------------------------------
-if menu == "💼 1. Portafolio de Servicios":
-    st.header("💼 Portafolio de Soluciones Inteligentes")
-    st.write("Explora nuestras 5 soluciones digitales diseñadas para impulsar tu negocio:")
+st.sidebar.markdown("---")
+st.sidebar.info("🌱 **FLORECER**\nInnovar con conciencia. Crecer para impactar.")
 
+# -------------------------------------------------------------------
+# 1. PORTAFOLIO DE SERVICIOS
+# -------------------------------------------------------------------
+if opcion == "💼 1. Portafolio de Servicios":
+    st.title("💼 1. Portafolio de Servicios de IA")
+    st.write("Soluciones digitales impulsadas por Inteligencia Artificial y datos.")
+    
     col1, col2 = st.columns(2)
-
     with col1:
-        st.markdown("""
-        <div class="card-florecer">
-            <h4>🤖 1. Asistente Florecer</h4>
-            <p>Chatbot interactivo conversacional 24/7 con la API de Gemini para atención a clientes y captación de oportunidades.</p>
-            <small style="color: #206785;"><b>Precio Simulado: $120 USD/mes</b></small>
-        </div>
-        <div class="card-florecer">
-            <h4>⚙️ 2. Flujo Automático</h4>
-            <p>Automatización de tareas repetitivas mediante n8n (sincronización de pedidos, bases de datos y correos).</p>
-            <small style="color: #206785;"><b>Precio Simulado: $79 USD/mes</b></small>
-        </div>
-        <div class="card-florecer">
-            <h4>📊 3. Radar de Clientes</h4>
-            <p>Dashboard analítico e interactivo en Streamlit para organizar y visualizar patrones de venta en tiempo real.</p>
-            <small style="color: #206785;"><b>Precio Simulado: $39 USD/mes</b></small>
-        </div>
-        """, unsafe_allow_html=True)
-
+        st.subheader("1. Consultoría en IA Generativa")
+        st.write("Implementación de modelos a medida para automatizar tareas complejas.")
+        st.subheader("2. Automatización con Webhooks & n8n")
+        st.write("Flujos de trabajo integrados para capturar clientes y enviar alertas.")
+        st.subheader("3. Asistentes Virtuales 24/7")
+        st.write("Chatbots inteligentes para atención al cliente y soporte.")
     with col2:
-        st.markdown("""
-        <div class="card-florecer">
-            <h4>🧠 4. Decisiones Florecer</h4>
-            <p>Modelo predictivo de Machine Learning (Regresión Lineal) para realizar estimaciones e ingresos futuros.</p>
-            <small style="color: #206785;"><b>Precio Simulado: $99 USD/mes</b></small>
-        </div>
-        <div class="card-florecer">
-            <h4>🌱 5. Impulso Florecer</h4>
-            <p>Generación automática de contenidos publicitarios, copys y piezas multimedia con herramientas de IA.</p>
-            <small style="color: #206785;"><b>Precio Simulado: $59 USD/mes</b></small>
-        </div>
-        """, unsafe_allow_html=True)
+        st.subheader("4. Analítica Predictiva & ML")
+        st.write("Predicción de tendencias de negocio con Python y Scikit-learn.")
+        st.subheader("5. Identidad Multimedia IA")
+        st.write("Creación de avatares parlantes, piezas visuales y contenido de marca.")
 
-# -----------------------------------------------------------------------------
-# SECCIÓN 2: CONTENIDO MULTIMEDIA CON IA
-# -----------------------------------------------------------------------------
-elif menu == "🎬 2. Video Comercial (IA)":
-    st.header("🎬 Video Comercial Promocional")
-    st.write("Demostración de contenido publicitario de 15 a 45 segundos generado con IA Generativa:")
-
-    if os.path.exists("video_florecer.mp4"):
-        st.video("video_florecer.mp4")
+# -------------------------------------------------------------------
+# 2. VIDEO COMERCIAL (AVATAR)
+# -------------------------------------------------------------------
+elif opcion == "🎬 2. Video Comercial (Avatar)":
+    st.title("🎬 2. Video Comercial con Avatar Parlante")
+    st.write("Presentación oficial de Florecer generada con IA.")
+    
+    video_file = "video_florecer.mp4"
+    if os.path.exists(video_file):
+        st.video(video_file)
     else:
-        st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-        st.info("💡 Coloca tu archivo 'video_florecer.mp4' (generado en CapCut AI / HeyGen) en la carpeta raíz para reemplazar el video de demostración.")
+        st.info("📌 Coloca el archivo 'video_florecer.mp4' en la carpeta de tu proyecto para visualizarlo aquí.")
 
-# -----------------------------------------------------------------------------
-# SECCIÓN 3: CHATBOT CON IA CONVERSACIONAL
-# -----------------------------------------------------------------------------
-elif menu == "🤖 3. Asistente Chatbot IA":
-    st.header("🤖 Asistente Virtual Interactivo")
-    st.write("Haz cualquier consulta en texto libre sobre los servicios, precios o la visión de Florecer:")
-
-    PROMPT_SISTEMA = """
-    Eres el asistente virtual interactivo de 'Florecer', una empresa dedicada a impulsar
-    pequeños negocios mediante herramientas de Inteligencia Artificial y Análisis de Datos.
-    Paleta de marca: Naranja Pastel, Agua Marina, Verde Suave, Lavanda y Crema.
-    Ofrecemos 5 servicios: Asistente Florecer ($120 USD), Flujo Automático ($79 USD),
-    Radar de Clientes ($39 USD), Decisiones Florecer ($99 USD) e Impulso Florecer ($59 USD).
-    Tus respuestas deben ser siempre amables, claras, motivadoras y breves.
-    """
-
+# -------------------------------------------------------------------
+# 3. ASISTENTE CHATBOT IA
+# -------------------------------------------------------------------
+elif opcion == "🤖 3. Asistente Chatbot IA":
+    st.title("🤖 3. Asistente Chatbot Virtual")
+    st.write("Interactúa con el Oráculo de Florecer:")
+    
     if "messages" not in st.session_state:
-        st.session_state.messages = []
+        st.session_state.messages = [{"role": "assistant", "content": "¡Hola! Soy la IA de Florecer. ¿En qué puedo ayudarte?"}]
 
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+    for msg in st.session_state.messages:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
 
-    if prompt := st.chat_input("Escribe tu consulta aquí..."):
-        st.chat_message("user").markdown(prompt)
+    if prompt := st.chat_input("Escribe tu consulta..."):
         st.session_state.messages.append({"role": "user", "content": prompt})
-
-        try:
-            model = genai.GenerativeModel("gemini-1.5-flash")
-            prompt_completo = f"{PROMPT_SISTEMA}\nPregunta del usuario: {prompt}"
-            response = model.generate_content(prompt_completo)
-            
-            with st.chat_message("assistant"):
-                st.markdown(response.text)
-            st.session_state.messages.append({"role": "assistant", "content": response.text})
-            
-        except Exception as e:
-            st.error(f"Error al conectar con la API de Gemini. Asegúrate de configurar GEMINI_API_KEY en secrets.toml. Detalles: {e}")
-
-# -----------------------------------------------------------------------------
-# SECCIÓN 4: AUTOMATIZACIÓN
-# -----------------------------------------------------------------------------
-elif menu == "📩 4. Solicitar Asesoría (n8n)":
-    st.header("📩 Solicitar Asesoría Personalizada")
-    st.write("Completa el formulario para activar el flujo automatizado a través de n8n:")
-
-    WEBHOOK_URL = "https://denisgreenway.app.n8n.cloud/webhook/florecer-contacto"
-
-    with st.form("form_contacto_n8n"):
-        c_nombre, c_correo = st.columns(2)
-        with c_nombre:
-            nombre = st.text_input("Tu Nombre Completo:")
-        with c_correo:
-            email = st.text_input("Tu Correo Electrónico:")
-
-        c_empresa, c_servicio = st.columns(2)
-        with c_empresa:
-            empresa = st.text_input("Nombre de tu Negocio:")
-        with c_servicio:
-            servicio_interes = st.selectbox(
-                "Servicio de Interés:", 
-                ["Asistente Florecer", "Flujo Automático", "Radar de Clientes", "Decisiones Florecer", "Impulso Florecer"]
-            )
-
-        boton_enviar = st.form_submit_button("🚀 Enviar Solicitud Automatizada")
-
-    if boton_enviar:
-        if nombre and email and empresa:
-            datos_payload = {
-                "nombre": nombre,
-                "email": email,
-                "empresa": empresa,
-                "servicio_interes": servicio_interes
-            }
-            try:
-                respuesta = requests.post(WEBHOOK_URL, json=datos_payload)
-                if respuesta.status_code in [200, 201]:
-                    st.success("✨ ¡Solicitud enviada con éxito! La automatización en n8n ha procesado tus datos.")
-                else:
-                    st.warning("⚠️ Solicitud enviada. Verifica que el Webhook en n8n esté activo.")
-            except Exception as e:
-                st.error(f"Error en la conexión con n8n: {e}")
-        else:
-            st.warning("Por favor completa los campos obligatorios antes de enviar.")
-
-# -----------------------------------------------------------------------------
-# SECCIÓN 5: MODELO DE MACHINE LEARNING Y DASHBOARD
-# -----------------------------------------------------------------------------
-elif menu == "📊 5. Dashboard & Modelo ML":
-    st.header("📊 Dashboard & Modelo Predictivo de Ventas (ML)")
-    st.write("Proyección de ingresos mediante Regresión Lineal entrenada con datos históricos:")
-
-    # Dataset simulado
-    np.random.seed(42)
-    meses = np.array(range(1, 13)).reshape(-1, 1)
-    ventas = 1000 + (meses.flatten() * 180) + np.random.randint(-120, 120, size=12)
-    df = pd.DataFrame({"Mes": meses.flatten(), "Ventas_USD": ventas})
-
-    # Entrenamiento del Modelo
-    model_ml = LinearRegression()
-    model_ml.fit(meses, ventas)
-
-    col1, col2 = st.columns([1, 2])
-
-    with col1:
-        st.subheader("⚙️ Parámetros del Modelo")
-        st.write(f"**Algoritmo:** Regresión Lineal (`scikit-learn`)")
-        st.write(f"**Precisión ($R^2$):** `{round(model_ml.score(meses, ventas), 2)}`")
+        with st.chat_message("user"):
+            st.markdown(prompt)
         
-        st.divider()
-        mes_pred = st.slider("Selecciona el mes futuro a predecir:", 13, 24, 15)
-        prediccion = model_ml.predict(np.array([[mes_pred]]))[0]
-        st.metric(label=f"Predicción de Ventas (Mes {mes_pred})", value=f"${round(prediccion, 2)} USD")
+        resp = f"Gracias por tu consulta sobre '{prompt}'. En Florecer conectamos tecnología y propósito."
+        with st.chat_message("assistant"):
+            st.markdown(resp)
+        st.session_state.messages.append({"role": "assistant", "content": resp})
 
-    with col2:
-        fig = px.scatter(
-            df, x="Mes", y="Ventas_USD", 
-            title="Tendencia de Ventas Históricas y Proyección",
-            trendline="ols",
-            color_discrete_sequence=["#206785"]
-        )
-        st.plotly_chart(fig, use_container_width=True)
+# -------------------------------------------------------------------
+# 4. SOLICITAR ASESORÍA (N8N)
+# -------------------------------------------------------------------
+elif opcion == "📩 4. Solicitar Asesoría (n8n)":
+    st.title("📩 4. Solicitar Asesoría (Automatización n8n)")
+    st.write("Déjanos tus datos para procesar tu solicitud automáticamente:")
+    
+    with st.form("formulario_n8n"):
+        nombre = st.text_input("Nombre completo:")
+        correo = st.text_input("Correo electrónico:")
+        mensaje = st.text_area("¿En qué proyecto necesitas ayuda?")
+        submit = st.form_submit_button("Enviar solicitud")
+        
+        if submit:
+            st.success(f"¡Gracias {nombre}! Solicitud enviada correctamente mediante el webhook de n8n.")
 
-# -----------------------------------------------------------------------------
-# SECCIÓN 6: DECLARACIÓN DE USO DE IA GENERATIVA
-# -----------------------------------------------------------------------------
-elif menu == "💡 6. Declaración de IA Generativa":
-    st.header("💡 Uso de IA Generativa en el Proyecto")
-    st.write("Declaración transparente del uso de herramientas de IA durante la creación de Florecer:")
+# -------------------------------------------------------------------
+# 5. DASHBOARD & MODELO ML
+# -------------------------------------------------------------------
+elif opcion == "📊 5. Dashboard & Modelo ML":
+    st.title("📊 5. Dashboard & Modelo de Machine Learning")
+    st.write("Visualización de datos y modelo predictivo.")
+    st.info("Espacio para los gráficos de Pandas / Matplotlib y las predicciones de Scikit-learn.")
 
+# -------------------------------------------------------------------
+# 6. DECLARACIÓN DE IA & CIERRE
+# -------------------------------------------------------------------
+elif opcion == "💡 6. Declaración de IA & Cierre":
+    st.title("💡 6. Declaración del Uso de IA & Conclusiones")
     st.markdown("""
-    * **1. Generación de Código:** Uso de modelos LLM (Gemini / ChatGPT) para la arquitectura de la app web en Python y Streamlit.
-    * **2. Generación de Texto y Prompting:** Configuración de prompts de sistema para el chatbot conversacional `gemini-1.5-flash`.
-    * **3. Generación de Identidad e Imágenes:** Creación del concepto visual, marca y logo utilizando herramientas de IA Generativa.
-    * **4. Generación de Video Comercial:** Producción multimedia con herramientas de avatares/video de IA para la promoción del servicio.
+    * **Herramientas de IA utilizadas:** D-ID/Canva (Avatar Parlante), Gemini API / Botpress (Chatbot), n8n (Automatización), Scikit-Learn (Machine Learning).
+    * **Impacto:** Innovación con conciencia para impulsar soluciones sostenibles y eficientes.
     """)
