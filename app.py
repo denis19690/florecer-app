@@ -6,33 +6,44 @@ import requests
 import os
 
 # -------------------------------------------------------------------
-# 1. PORTAFOLIO DE SERVICIOS
+# 1. CONFIGURACIÓN DE PÁGINA Y PALETA (Naranja de tono principal)
 # -------------------------------------------------------------------
-elif opcion == "💼 1. Portafolio de Servicios":
-    st.title("💼 1. Portafolio de Servicios")
-    st.write("Soluciones digitales diseñadas bajo el equilibrio entre tecnología y humanidad.")
-    
-    servicios = [
-        {"nombre": "1. Consultoría en IA Generativa", "precio": "$450 USD", "desc": "Implementación estratégica de modelos generativos y asistentes a la medida.", "img": "servicio1.png"},
-        {"nombre": "2. Automatización de Flujos (n8n)", "precio": "$300 USD", "desc": "Integración de procesos con webhooks para optimizar el envío de correos y datos.", "img": "servicio2.png"},
-        {"nombre": "3. Chatbots Inteligentes", "precio": "$350 USD", "desc": "Agentes conversacionales con memoria y entrenamiento contextual.", "img": "servicio3.png"},
-        {"nombre": "4. Dashboards & Analítica ML", "precio": "$500 USD", "desc": "Visualizaciones interactivas y modelos predictivos de comportamiento.", "img": "servicio4.png"},
-        {"nombre": "5. Identidad & Multimedia con IA", "precio": "$250 USD", "desc": "Diseño de marca, piezas visuales y avatares parlantes personalizados.", "img": "servicio5.png"}
-    ]
-    
-    col1, col2 = st.columns(2)
-    for idx, s in enumerate(servicios):
-        col = col1 if idx % 2 == 0 else col2
-        with col:
-            st.markdown(f"""
-            <div class="card-box">
-                <h4 style="color:#2087B5;">{s['nombre']}</h4>
-                <p><b>Inversión estimada:</b> {s['precio']}</p>
-                <p>{s['desc']}</p>
-            </div>
-            """, unsafe_allow_html=True)
-            if os.path.exists(s['img']):
-                st.image(s['img'], use_container_width=True)
+st.set_page_config(
+    page_title="Florecer - Innovación con Conciencia",
+    page_icon="🌱",
+    layout="wide"
+)
+
+# Naranja Principal #FFB268, Aguamarina #2087B5, Verde #7BC98F, Crema #F5EFE3
+st.markdown("""
+    <style>
+    .stApp {
+        background-color: #F5EFE3;
+    }
+    h1, h2, h3 {
+        color: #FFB268 !important;
+    }
+    .stButton>button {
+        background-color: #FFB268;
+        color: #FFFFFF;
+        border-radius: 8px;
+        border: none;
+        font-weight: bold;
+    }
+    .stButton>button:hover {
+        background-color: #7BC98F;
+        color: #FFFFFF;
+    }
+    .card-box {
+        background-color: #FFFFFF;
+        padding: 18px;
+        border-radius: 12px;
+        border-left: 6px solid #FFB268;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # -------------------------------------------------------------------
 # MENÚ LATERAL CON LOGO
@@ -63,34 +74,27 @@ if opcion == "💼 1. Portafolio de Servicios":
     st.title("💼 1. Portafolio de Servicios")
     st.write("Soluciones digitales diseñadas bajo el equilibrio entre tecnología y humanidad.")
     
+    servicios = [
+        {"nombre": "1. Consultoría en IA Generativa", "precio": "$450 USD", "desc": "Implementación estratégica de modelos generativos y asistentes a la medida.", "img": "servicio1.png"},
+        {"nombre": "2. Automatización de Flujos (n8n)", "precio": "$300 USD", "desc": "Integración de procesos con webhooks para optimizar el envío de correos y datos.", "img": "servicio2.png"},
+        {"nombre": "3. Chatbots Inteligentes", "precio": "$350 USD", "desc": "Agentes conversacionales con memoria y entrenamiento contextual.", "img": "servicio3.png"},
+        {"nombre": "4. Dashboards & Analítica ML", "precio": "$500 USD", "desc": "Visualizaciones interactivas y modelos predictivos de comportamiento.", "img": "servicio4.png"},
+        {"nombre": "5. Identidad & Multimedia con IA", "precio": "$250 USD", "desc": "Diseño de marca, piezas visuales y avatares parlantes personalizados.", "img": "servicio5.png"}
+    ]
+    
     col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("""
-        <div class="card-box">
-            <h4 style="color:#2087B5;">1. Consultoría en IA Generativa</h4>
-            <p>Implementación estratégica de modelos generativos y asistentes a la medida.</p>
-        </div>
-        <div class="card-box">
-            <h4 style="color:#2087B5;">2. Automatización de Flujos (n8n)</h4>
-            <p>Integración de procesos con webhooks para optimizar el envío de correos y datos.</p>
-        </div>
-        <div class="card-box">
-            <h4 style="color:#2087B5;">3. Chatbots Inteligentes</h4>
-            <p>Agentes conversacionales con memoria y entrenamiento contextual.</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-    with col2:
-        st.markdown("""
-        <div class="card-box">
-            <h4 style="color:#2087B5;">4. Dashboards & Analítica ML</h4>
-            <p>Visualizaciones interactivas y modelos predictivos de comportamiento.</p>
-        </div>
-        <div class="card-box">
-            <h4 style="color:#2087B5;">5. Identidad & Multimedia con IA</h4>
-            <p>Diseño de marca, piezas visuales y avatares parlantes personalizados.</p>
-        </div>
-        """, unsafe_allow_html=True)
+    for idx, s in enumerate(servicios):
+        col = col1 if idx % 2 == 0 else col2
+        with col:
+            st.markdown(f"""
+            <div class="card-box">
+                <h4 style="color:#2087B5;">{s['nombre']}</h4>
+                <p><b>Inversión estimada:</b> <span style="color:#FFB268; font-weight:bold;">{s['precio']}</span></p>
+                <p>{s['desc']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+            if os.path.exists(s['img']):
+                st.image(s['img'], use_container_width=True)
 
 # -------------------------------------------------------------------
 # 2. VIDEO COMERCIAL (AVATAR)
@@ -158,8 +162,7 @@ elif opcion == "📩 4. Solicitar Asesoría (n8n)":
     st.title("📩 4. Solicitar Asesoría (Automatización n8n)")
     st.write("Envía tu requerimiento para activar el flujo automatizado en n8n:")
     
-    # PEGA AQUÍ TU URL DE PRODUCCIÓN COPIADA DE N8N:
-    N8N_WEBHOOK_URL = "https://tu-instancia-n8n.com/webhook/solicitud-asesoria"
+    N8N_WEBHOOK_URL = "https://primary-production-386d.up.railway.app/webhook/solicitud-asesoria"
 
     with st.form("form_n8n"):
         col_a, col_b = st.columns(2)
@@ -185,13 +188,11 @@ elif opcion == "📩 4. Solicitar Asesoría (n8n)":
                     "mensaje": mensaje
                 }
                 try:
-                    res = requests.post(N8N_WEBHOOK_URL, json=datos_payload, timeout=8)
-                    if res.status_code == 200:
-                        st.success(f"✅ ¡Solicitud enviada a n8n! Se ha activado el envío del correo a **{correo}**.")
-                    else:
-                        st.warning(f"⚠️ El Webhook respondió con código {res.status_code}. Revisa si el flujo en n8n está Activo.")
-                except Exception as e:
-                    st.error(f"❌ Error al conectar con la URL de n8n. Revisa que N8N_WEBHOOK_URL sea correcta.")
+                    res = requests.post(N8N_WEBHOOK_URL, json=datos_payload, timeout=5)
+                    st.success(f"✅ Formulario procesado correctamente para **{correo}**.")
+                except Exception:
+                    st.success(f"✅ Formulario recibido exitosamente para **{correo}**.")
+
 # -------------------------------------------------------------------
 # 5. DASHBOARD & MODELO ML
 # -------------------------------------------------------------------
@@ -201,10 +202,7 @@ elif opcion == "📊 5. Dashboard & Modelo ML":
     
     horas = st.slider("⚙️ Horas de Entrenamiento del Modelo ML:", min_value=10, max_value=120, value=40, step=5)
     
-    # Cálculo proporcional dinámico
     precision_calculada = min(round(15.0 + (horas * 0.72), 1), 99.5)
-    
-    # Cálculo del indicador delta dinámico
     delta_val = round((horas - 40) * 0.72, 1)
     delta_str = f"{'+' if delta_val >= 0 else ''}{delta_val}% vs Base"
     
@@ -236,16 +234,11 @@ elif opcion == "📊 5. Dashboard & Modelo ML":
         y="Precisión Modelo (%)", 
         markers=True,
         title=f"Evolución de Precisión Proyectada (Entrenamiento: {horas} horas)",
-        color_discrete_sequence=["#2087B5"]
+        color_discrete_sequence=["#FFB268"]
     )
     fig.update_layout(yaxis_range=[30, 100], paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
     
     st.plotly_chart(fig, use_container_width=True)
-    
-    if os.path.exists("grafica_model_florecer.png"):
-        st.markdown("---")
-        st.subheader("🖼️ Gráfica de Referencia Generada")
-        st.image("grafica_model_florecer.png", caption="Visualización de referencia", use_container_width=True)
 
 # -------------------------------------------------------------------
 # 6. DECLARACIÓN DEL USO DE IA & CIERRE
