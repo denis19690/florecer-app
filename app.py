@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import plotly.express as px
 import requests
 import os
 
@@ -59,7 +60,6 @@ def obtener_ruta_logo():
     for archivo in posibles_nombres:
         if os.path.exists(archivo):
             return archivo
-    # Búsqueda por coincidencia general si tiene otro nombre exacto
     for f in os.listdir("."):
         if "logo" in f.lower() and f.endswith((".png", ".jpg", ".jpeg")):
             return f
@@ -231,11 +231,11 @@ elif opcion == "📩 4. Solicitar Asesoría (n8n)":
                     st.success(f"✅ Formulario recibido exitosamente para **{correo}**.")
 
 # -------------------------------------------------------------------
-# 5. DASHBOARD & MODELO ML
+# 5. DASHBOARD & MODELO ML (CON LAS 2 GRÁFICAS)
 # -------------------------------------------------------------------
 elif opcion == "📊 5. Dashboard & Modelo ML":
     st.title("📊 5. Dashboard & Modelo de Machine Learning")
-    st.write("Ajusta los parámetros para observar los resultados proyectados del modelo en tiempo real:")
+    st.write("Ajusta los parámetros para analizar las proyecciones y la dispersión del modelo ML:")
     
     horas = st.slider("⚙️ Horas de Entrenamiento del Modelo ML:", min_value=10, max_value=120, value=40, step=5)
     
@@ -243,8 +243,7 @@ elif opcion == "📊 5. Dashboard & Modelo ML":
     delta_val = round((horas - 40) * 0.72, 1)
     delta_str = f"{'+' if delta_val >= 0 else ''}{delta_val}% vs Base"
     
-    st.markdown("---")
-    
+    # Métricas principales
     m1, m2, m3 = st.columns(3)
     m1.metric("Horas de Entrenamiento", f"{horas} hrs")
     m2.metric("Precisión Estimada", f"{precision_calculada}%", delta_str)
@@ -254,12 +253,47 @@ elif opcion == "📊 5. Dashboard & Modelo ML":
     else:
         m3.metric("Estado del Modelo", "En Entrenamiento", "Requiere más Horas", delta_color="inverse")
 
-    st.markdown("""
-    <div class="card-box" style="margin-top:25px;">
-        <h4 style="color:#2087B5;">📌 Resumen de Estimación de Machine Learning</h4>
-        <p>El modelo utiliza un algoritmo de regresión ajustado para proyectar el rendimiento de la herramienta en función del volumen de datos y horas de procesamiento acumuladas.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("---")
+
+    # Generación de datos simulados para las gráficas
+    np.random.seed(42)
+    eje_x = np.linspace(10, horas, 25)
+    eje_y = np.clip(15.0 + (eje_x * 0.72) + np.random.normal(0, 3, 25), 10, 99.5)
+    
+    df_puntos = pd.DataFrame({
+        "Eje X (Horas Procesadas)": eje_x,
+        "Eje Y (Precisión Registrada %)": eje_y,
+        "Tamaño Punto": np.random.uniform(8, 20, 25)
+    })
+
+    col_g1, col_g2 = st.columns(2)
+
+    # Gráfica 1: Puntos y Línea de Tendencia (Relación X / Y)
+    with col_g1:
+        fig1 = px.line(
+            df_puntos, 
+            x="Eje X (Horas Procesadas)", 
+            y="Eje Y (Precisión Registrada %)",
+            markers=True,
+            title="📈 1. Tendencia Eje X vs Eje Y (Regresión)",
+            color_discrete_sequence=["#FFB268"]
+        )
+        fig1.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
+        st.plotly_chart(fig1, use_container_width=True)
+
+    # Gráfica 2: Dispersión de Puntos (Scatter Plot)
+    with col_g2:
+        fig2 = px.scatter(
+            df_puntos,
+            x="Eje X (Horas Procesadas)",
+            y="Eje Y (Precisión Registrada %)",
+            size="Tamaño Punto",
+            color="Eje Y (Precisión Registrada %)",
+            color_continuous_scale=["#2087B5", "#FFB268"],
+            title="🟡 2. Dispersión de Puntos de Muestreo"
+        )
+        fig2.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
+        st.plotly_chart(fig2, use_container_width=True)
 
 # -------------------------------------------------------------------
 # 6. DECLARACIÓN DEL USO DE IA & CIERRE
