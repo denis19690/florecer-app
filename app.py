@@ -52,10 +52,26 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -------------------------------------------------------------------
+# BÚSQUEDA DINÁMICA DE LA IMAGEN DEL LOGO
+# -------------------------------------------------------------------
+def obtener_ruta_logo():
+    posibles_nombres = ["Logo.png.jpg", "logo.png.jpg", "logo.png", "logo.jpg", "Logo.png", "Logo.jpg"]
+    for archivo in posibles_nombres:
+        if os.path.exists(archivo):
+            return archivo
+    # Búsqueda por coincidencia general si tiene otro nombre exacto
+    for f in os.listdir("."):
+        if "logo" in f.lower() and f.endswith((".png", ".jpg", ".jpeg")):
+            return f
+    return None
+
+logo_path = obtener_ruta_logo()
+
+# -------------------------------------------------------------------
 # MENÚ LATERAL CON LOGO
 # -------------------------------------------------------------------
-if os.path.exists("logo.png"):
-    st.sidebar.image("logo.png", use_container_width=True)
+if logo_path:
+    st.sidebar.image(logo_path, use_container_width=True)
 
 st.sidebar.title("Navegación del Proyecto:")
 opcion = st.sidebar.radio(
@@ -77,11 +93,10 @@ st.sidebar.info("🌱 **FLORECER**\nInnovar con conciencia. Crecer para impactar
 # 1. PORTAFOLIO DE SERVICIOS + LOGO, MISIÓN Y VISIÓN
 # -------------------------------------------------------------------
 if opcion == "💼 1. Portafolio de Servicios":
-    # Muestra del Logo, Misión y Visión en la cabecera
     col_logo, col_info = st.columns([1, 2])
     with col_logo:
-        if os.path.exists("logo.png"):
-            st.image("logo.png", use_container_width=True)
+        if logo_path:
+            st.image(logo_path, use_container_width=True)
         else:
             st.title("🌱 FLORECER")
     with col_info:
@@ -216,7 +231,7 @@ elif opcion == "📩 4. Solicitar Asesoría (n8n)":
                     st.success(f"✅ Formulario recibido exitosamente para **{correo}**.")
 
 # -------------------------------------------------------------------
-# 5. DASHBOARD & MODELO ML (Sin gráfica)
+# 5. DASHBOARD & MODELO ML
 # -------------------------------------------------------------------
 elif opcion == "📊 5. Dashboard & Modelo ML":
     st.title("📊 5. Dashboard & Modelo de Machine Learning")
